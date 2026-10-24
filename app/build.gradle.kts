@@ -15,8 +15,8 @@ android {
         applicationId = "com.muneeb.quran16line"
         minSdk = 24
         targetSdk = 36
-        versionCode = 4
-        versionName = "1.3"
+        versionCode = 5
+        versionName = "1.3.1"
     }
 
     // Release key lives outside git (keystore.properties + release.keystore at the repo root).

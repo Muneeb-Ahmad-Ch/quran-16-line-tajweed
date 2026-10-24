@@ -22,11 +22,11 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Search
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.input.ImeAction
@@ -65,6 +65,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.text.font.FontWeight
@@ -255,26 +256,60 @@ private fun SurahTab(open: (Screen) -> Unit) {
     val results = remember(query) { SurahSearch.search(query) }
     val keyboard = LocalSoftwareKeyboardController.current
     Column(Modifier.fillMaxSize()) {
-        OutlinedTextField(
-            value = query,
-            onValueChange = { query = it },
-            singleLine = true,
-            placeholder = { Text("Search Surah: name or number") },
-            leadingIcon = { Icon(Icons.Filled.Search, contentDescription = null) },
-            trailingIcon = {
-                if (query.isNotEmpty()) {
-                    IconButton(onClick = { query = "" }) { Icon(Icons.Filled.Close, contentDescription = "Clear search") }
-                }
-            },
-            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
-            keyboardActions = KeyboardActions(onSearch = { keyboard?.hide() }),
-            shape = RoundedCornerShape(28.dp),
-            modifier = Modifier.fillMaxWidth().padding(horizontal = 12.dp, vertical = 8.dp),
-        )
+        SearchField(query, onChange = { query = it }, onDone = { keyboard?.hide() })
         LazyColumn(Modifier.fillMaxSize(), contentPadding = PaddingValues(bottom = 8.dp)) {
             surahList(results, showExtras = query.isBlank(), open)
         }
     }
+}
+
+/** Slim one-line search pill; keeps its height at any font size. */
+@Composable
+private fun SearchField(query: String, onChange: (String) -> Unit, onDone: () -> Unit) {
+    val textStyle = MaterialTheme.typography.bodyLarge.copy(color = MaterialTheme.colorScheme.onSurface)
+    BasicTextField(
+        value = query,
+        onValueChange = onChange,
+        singleLine = true,
+        textStyle = textStyle,
+        cursorBrush = SolidColor(MaterialTheme.colorScheme.primary),
+        keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
+        keyboardActions = KeyboardActions(onSearch = { onDone() }),
+        modifier = Modifier.fillMaxWidth().padding(horizontal = 12.dp, vertical = 8.dp),
+        decorationBox = { field ->
+            Row(
+                Modifier
+                    .fillMaxWidth()
+                    .height(44.dp)
+                    .clip(RoundedCornerShape(22.dp))
+                    .background(MaterialTheme.colorScheme.surfaceContainerHigh)
+                    .padding(start = 14.dp, end = 4.dp),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Icon(
+                    Icons.Filled.Search, contentDescription = null,
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant, modifier = Modifier.size(20.dp),
+                )
+                Box(Modifier.weight(1f).padding(start = 10.dp), contentAlignment = Alignment.CenterStart) {
+                    if (query.isEmpty()) {
+                        Text(
+                            "Search Surah",
+                            style = textStyle,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis,
+                        )
+                    }
+                    field()
+                }
+                if (query.isNotEmpty()) {
+                    IconButton(onClick = { onChange("") }, modifier = Modifier.size(40.dp)) {
+                        Icon(Icons.Filled.Close, contentDescription = "Clear search", modifier = Modifier.size(18.dp))
+                    }
+                }
+            }
+        },
+    )
 }
 
 private fun LazyListScope.surahList(surahs: List<Surah>, showExtras: Boolean, open: (Screen) -> Unit) {
