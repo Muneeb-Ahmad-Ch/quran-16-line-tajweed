@@ -173,7 +173,7 @@
 - `class PageImages(context: Context)` with:
   - `fun assetPath(version:MushafVersion, page:Int):String`, which returns `"pages/${version.assetDir}/%04d.webp"`
   - `fun extraPath(i:Int):String`, which returns `"extras/%02d.webp"`
-  - `suspend fun load(path:String, targetWidth:Int): ImageBitmap`, which decodes on `Dispatchers.IO` using `inDensity`/`inTargetDensity` scaling to targetWidth and `ARGB_8888`, cached in an `LruCache<String, Bitmap>` sized to 1/6 of `maxMemory`
+  - `suspend fun load(path:String, targetWidth:Int): ImageBitmap`, which decodes on `Dispatchers.IO` using `inDensity`/`inTargetDensity` scaling to targetWidth and `ARGB_8888`, cached in an `LruCache<String, Bitmap>` sized to 1/4 of `maxMemory`
   - `fun prefetch(paths:List<String>, targetWidth:Int)`
   - `val manifest: PageManifest`, parsed from `pages/manifest.json` and giving aspect ratio and bg per version
 - `fun pageColorFilter(style:PageStyle): ColorFilter?`, which returns null for ORIGINAL

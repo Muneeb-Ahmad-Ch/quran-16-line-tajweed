@@ -54,7 +54,7 @@ class PageImages(context: Context) {
 
     val manifest: PageManifest = assets.open(PageAssets.MANIFEST).use { PageManifest.parse(it.reader().readText()) }
 
-    private val cache = object : LruCache<String, Bitmap>((Runtime.getRuntime().maxMemory() / 6).toInt()) {
+    private val cache = object : LruCache<String, Bitmap>((Runtime.getRuntime().maxMemory() / 4).toInt()) {
         override fun sizeOf(key: String, value: Bitmap) = value.byteCount
     }
 
