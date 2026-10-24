@@ -2,7 +2,7 @@ import random
 
 from PIL import Image, ImageDraw
 
-from convert_pages import detect_frame, expand, para_start, quran_pages, stable_crop
+from convert_pages import FRAME_TOLERANCE, detect_frame, expand, para_start, quran_pages, stable_crop
 
 
 def test_para_start():
@@ -66,6 +66,18 @@ def test_outlier_frame_falls_back_to_median():
     # far off (decorated full-sheet page): use the median frame
     far = (2, 3, 997, 1496)
     assert stable_crop(far, median, size) == (100, 120, 900, 1395)
+
+
+def test_zero_tolerance_always_uses_median():
+    # plain scans are digitally aligned already: every page gets the same crop
+    median = (0.10, 0.08, 0.90, 0.93)
+    near = (105, 125, 898, 1392)
+    assert stable_crop(near, median, (1000, 1500), tolerance=0) == (100, 120, 900, 1395)
+
+
+def test_versions_frame_tolerance():
+    assert FRAME_TOLERANCE["plain"] == 0
+    assert FRAME_TOLERANCE["color"] == 0.03
 
 
 def test_expand_uses_fractions_of_frame():

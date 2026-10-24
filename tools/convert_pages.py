@@ -16,12 +16,14 @@ SOURCES = {
     "color": "tajweed coloured (myonlinestudent)",
 }
 FIRST_PAGE, LAST_PAGE = 2, 549
-TARGET_WIDTH = 1440
-WEBP_QUALITY = 82
+TARGET_WIDTH = 1200
+WEBP_QUALITY = 72
 FRAME_INK = 200        # luma below this counts as frame ink
 CONTENT_INK = 235      # luma below this counts as any printed content
 FRAME_COVERAGE = 0.55  # a frame line covers at least this share of the page
-OUTLIER = 0.03         # frame edge further than this from the median -> use median
+# Frame edge further than this (share of page size) from the median -> use the median frame.
+# Plain scans are digitally aligned already, and ruku tabs break their border line, so they always use it.
+FRAME_TOLERANCE = {"plain": 0, "color": 0.03}
 MARGIN_CAP = 0.20
 ANALYSIS_SCALE = 4
 COLOR_RENDER_WIDTH = 1700
@@ -70,11 +72,11 @@ def detect_frame(img):
     return (xs[0], ys[0], xs[-1] + 1, ys[-1] + 1)
 
 
-def stable_crop(frame, median_frame_norm, page_size):
+def stable_crop(frame, median_frame_norm, page_size, tolerance=FRAME_TOLERANCE["color"]):
     w, h = page_size
     dims = (w, h, w, h)
     median = tuple(round(f * d) for f, d in zip(median_frame_norm, dims))
-    if any(abs(a - b) > OUTLIER * d for a, b, d in zip(frame, median, dims)):
+    if any(abs(a - b) > tolerance * d for a, b, d in zip(frame, median, dims)):
         return median
     return tuple(frame)
 
@@ -149,7 +151,7 @@ def convert_version(kind, src, out, pool):
 
     norm = [tuple(v / d for v, d in zip(f, (s[0], s[1], s[0], s[1]))) for s, f, _ in analysed.values()]
     median_norm = tuple(statistics.median(n[i] for n in norm) for i in range(4))
-    frames = {p: stable_crop(f, median_norm, s) for p, (s, f, _) in analysed.items()}
+    frames = {p: stable_crop(f, median_norm, s, FRAME_TOLERANCE[kind]) for p, (s, f, _) in analysed.items()}
 
     def ext(p):
         l, t, r, b = frames[p]
