@@ -12,3 +12,4 @@ tools/out/
 .idea/
 *.iml
 .kotlin/
+keystore.properties

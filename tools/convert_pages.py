@@ -81,6 +81,13 @@ def stable_crop(frame, median_frame_norm, page_size, tolerance=FRAME_TOLERANCE["
     return tuple(frame)
 
 
+def symmetric_sides(margins):
+    """Equal left/right margins (the larger of the two) so the frame sits centred on screen."""
+    l, t, r, b = margins
+    side = max(l, r)
+    return (side, t, side, b)
+
+
 def expand(frame, margins):
     l, t, r, b = frame
     fw, fh = r - l, b - t
@@ -160,7 +167,7 @@ def convert_version(kind, src, out, pool):
         return (max(l - cl, 0) / fw, max(t - ct, 0) / fh, max(cr - r, 0) / fw, max(cb - b, 0) / fh)
 
     exts = [ext(p) for p in pages]
-    margins = tuple(min(sorted(e[i] for e in exts)[int(0.95 * (len(exts) - 1))], MARGIN_CAP) for i in range(4))
+    margins = symmetric_sides(tuple(min(sorted(e[i] for e in exts)[int(0.95 * (len(exts) - 1))], MARGIN_CAP) for i in range(4)))
     boxes = {p: expand(frames[p], margins) for p in pages}
     aspect = statistics.median((b[3] - b[1]) / (b[2] - b[0]) for b in boxes.values())
     size = (TARGET_WIDTH, round(TARGET_WIDTH * aspect))

@@ -52,15 +52,17 @@ fun App(vm: AppViewModel) {
         // Surface also sets the default content (text/icon) colour for the theme.
         Surface(Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
             if (s == null) return@Surface // first disk read still in flight: show only the themed background
-            BackHandler(enabled = vm.backStack.size > 1) { vm.back() }
+            // Forget a popped screen's saved state, so reopening e.g. Reader(page=21) starts at page 21 again.
+            val goBack = { vm.back()?.let { if (it != Screen.Home) saveable.removeState(it.toString()) } }
+            BackHandler(enabled = vm.backStack.size > 1) { goBack() }
             val screen = vm.backStack.last()
             // Keeps each screen's saved UI state (Home's tab and scroll positions) while it's in the back stack.
             saveable.SaveableStateProvider(screen.toString()) {
                 when (screen) {
                     Screen.Home -> HomeScreen(vm, s, dark, open = vm::open)
                     is Screen.Reader -> ReaderScreen(vm, s, dark, startPage = screen.page)
-                    Screen.Settings -> SettingsScreen(vm, s, dark, onBack = { vm.back() }, open = vm::open)
-                    Screen.About -> AboutScreen(onBack = { vm.back() })
+                    Screen.Settings -> SettingsScreen(vm, s, dark, onBack = { goBack() }, open = vm::open)
+                    Screen.About -> AboutScreen(onBack = { goBack() })
                     is Screen.Extras -> ExtrasScreen(vm, s, dark, startIndex = screen.index)
                 }
             }

@@ -6,7 +6,6 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.displayCutout
 import androidx.compose.foundation.layout.fillMaxSize
@@ -32,7 +31,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
@@ -42,6 +41,7 @@ import com.muneeb.quran16line.data.QuranIndex
 import com.muneeb.quran16line.data.Settings
 import com.muneeb.quran16line.pages.PageAssets
 import com.muneeb.quran16line.pages.letterboxColor
+import com.muneeb.quran16line.pages.readerTargetWidth
 import com.muneeb.quran16line.pages.pageColorFilter
 import com.muneeb.quran16line.ui.AppIcons
 import com.muneeb.quran16line.ui.AppViewModel
@@ -68,8 +68,8 @@ fun ReaderScreen(vm: AppViewModel, s: Settings, dark: Boolean, startPage: Int) {
     ImmersiveMode()
     KeepScreenOn(s.keepScreenOn)
 
-    BoxWithConstraints(Modifier.fillMaxSize().background(background)) {
-        val targetWidth = with(LocalDensity.current) { maxWidth.roundToPx() }.coerceAtMost(info.width)
+    Box(Modifier.fillMaxSize().background(background)) {
+        val targetWidth = readerTargetWidth(LocalWindowInfo.current.containerSize.width, info)
 
         // Right-to-left like a printed Mushaf: swiping right brings the next page.
         CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {

@@ -3,7 +3,9 @@ package com.muneeb.quran16line.ui.home
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -52,6 +54,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -62,6 +65,7 @@ import com.muneeb.quran16line.data.QuranIndex
 import com.muneeb.quran16line.data.Settings
 import com.muneeb.quran16line.pages.PageAssets
 import com.muneeb.quran16line.pages.pageColorFilter
+import com.muneeb.quran16line.pages.readerTargetWidth
 import com.muneeb.quran16line.ui.AppViewModel
 import com.muneeb.quran16line.ui.Screen
 import com.muneeb.quran16line.ui.reader.BookmarkSheet
@@ -132,6 +136,12 @@ private fun ResumeCard(vm: AppViewModel, s: Settings, dark: Boolean, onResume: (
     val path = PageAssets.page(s.version, page)
     var thumb by remember(path) { mutableStateOf<ImageBitmap?>(vm.images.cached(path, THUMB_WIDTH)) }
     LaunchedEffect(path) { if (thumb == null) thumb = vm.images.load(path, THUMB_WIDTH) }
+    // Decode the resume page (and its neighbours) at reader size now, so Resume opens with no blank frame.
+    val readerWidth = readerTargetWidth(LocalWindowInfo.current.containerSize.width, vm.images.manifest.of(s.version))
+    LaunchedEffect(page, s.version, readerWidth) {
+        val pages = listOf(page, page + 1, page - 1).filter { it in QuranIndex.FIRST_PAGE..QuranIndex.LAST_PAGE }
+        vm.images.prefetch(pages.map { PageAssets.page(s.version, it) }, readerWidth)
+    }
     val surah = QuranIndex.surahForPage(page)
     val para = QuranIndex.paraForPage(page)
     val aspect = vm.images.manifest.of(s.version).aspect
@@ -243,6 +253,7 @@ private fun LazyListScope.manzilList(open: (Screen) -> Unit) {
     }
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 private fun LazyListScope.bookmarkList(
     bookmarks: List<Bookmark>,
     open: (Screen) -> Unit,
@@ -263,7 +274,10 @@ private fun LazyListScope.bookmarkList(
     items(bookmarks, key = { "b${it.page}" }) { b ->
         var menu by remember { mutableStateOf(false) }
         Row(
-            Modifier.fillMaxWidth().clickable { open(Screen.Reader(b.page)) }.padding(start = 16.dp, top = 6.dp, bottom = 6.dp),
+            Modifier
+                .fillMaxWidth()
+                .combinedClickable(onClick = { open(Screen.Reader(b.page)) }, onLongClick = { menu = true })
+                .padding(start = 16.dp, top = 6.dp, bottom = 6.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
             Column(Modifier.weight(1f)) {

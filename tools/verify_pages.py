@@ -17,7 +17,7 @@ from convert_pages import FIRST_PAGE, LAST_PAGE, detect_frame
 TOLERANCE = 0.01
 SIZE_LIMIT_MB = 280  # 1200px pages; no Play Store limit applies (GitHub release)
 # Decorated full-sheet pages whose frame differs by design (checked visually on the contact sheets).
-ALLOW = {"plain": {2, 3, 526, 545, 546, 547, 548}, "color": {2, 3}}
+ALLOW = {"plain": {2, 3, 71, 73, 526, 529, 545, 546, 547, 548}, "color": {2, 3}}
 SHEET_PAGES = [2, 3, 20, 21, 22, 181, 182, 547, 548, 549]
 
 

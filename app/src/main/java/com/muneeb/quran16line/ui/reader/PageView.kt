@@ -22,6 +22,7 @@ import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import com.muneeb.quran16line.pages.PageImages
+import kotlinx.coroutines.CancellationException
 import me.saket.telephoto.zoomable.ZoomSpec
 import me.saket.telephoto.zoomable.ZoomableContentLocation
 import me.saket.telephoto.zoomable.rememberZoomableState
@@ -36,7 +37,15 @@ import me.saket.telephoto.zoomable.zoomable
 fun ZoomablePage(path: String, images: PageImages, targetWidth: Int, colorFilter: ColorFilter?) {
     var bitmap by remember(path, targetWidth) { mutableStateOf<ImageBitmap?>(images.cached(path, targetWidth)) }
     if (bitmap == null) {
-        LaunchedEffect(path, targetWidth) { bitmap = images.load(path, targetWidth) }
+        LaunchedEffect(path, targetWidth) {
+            bitmap = try {
+                images.load(path, targetWidth)
+            } catch (e: CancellationException) {
+                throw e
+            } catch (_: Throwable) {
+                null // missing asset or out of memory: keep showing the background instead of crashing
+            }
+        }
     }
     val zoom = rememberZoomableState(zoomSpec = ZoomSpec(maxZoomFactor = 4f))
     val b = bitmap ?: return

@@ -2,7 +2,7 @@ import random
 
 from PIL import Image, ImageDraw
 
-from convert_pages import FRAME_TOLERANCE, detect_frame, expand, para_start, quran_pages, stable_crop
+from convert_pages import FRAME_TOLERANCE, detect_frame, expand, para_start, quran_pages, stable_crop, symmetric_sides
 
 
 def test_para_start():
@@ -83,3 +83,9 @@ def test_versions_frame_tolerance():
 def test_expand_uses_fractions_of_frame():
     frame = (100, 200, 900, 1200)  # 800 x 1000
     assert expand(frame, (0.05, 0.02, 0.0, 0.1)) == (60, 180, 900, 1300)
+
+
+def test_symmetric_side_margins():
+    # side margins become equal (the larger one) so the frame sits centred
+    assert symmetric_sides((0.008, 0.033, 0.033, 0.013)) == (0.033, 0.033, 0.033, 0.013)
+    assert symmetric_sides((0.04, 0.01, 0.02, 0.05)) == (0.04, 0.01, 0.04, 0.05)

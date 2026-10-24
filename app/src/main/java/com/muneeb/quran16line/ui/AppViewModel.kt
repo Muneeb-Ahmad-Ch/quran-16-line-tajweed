@@ -33,10 +33,10 @@ class AppViewModel(app: Application) : AndroidViewModel(app) {
         backStack.add(screen)
     }
 
-    fun back(): Boolean {
-        if (backStack.size <= 1) return false
-        backStack.removeAt(backStack.lastIndex)
-        return true
+    /** Pops the top screen and returns it, or null when already at Home. */
+    fun back(): Screen? {
+        if (backStack.size <= 1) return null
+        return backStack.removeAt(backStack.lastIndex)
     }
 
     fun onPageShown(page: Int) {

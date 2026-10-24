@@ -42,6 +42,9 @@ data class PageManifest(val plain: VersionInfo, val color: VersionInfo, val extr
     }
 }
 
+/** Width (px) pages are decoded at for the reader: the window width, never upscaled beyond the source. */
+fun readerTargetWidth(windowWidthPx: Int, info: VersionInfo): Int = windowWidthPx.coerceAtMost(info.width)
+
 /**
  * Decodes page images from assets at the width they are drawn, off the main thread,
  * with an in-memory cache and de-duplicated in-flight decodes for prefetching.
@@ -94,6 +97,8 @@ class PageImages(context: Context) {
             opts.inDensity = bounds.outWidth
             opts.inTargetDensity = targetWidth
         }
-        return assets.open(path).use { requireNotNull(BitmapFactory.decodeStream(it, null, opts)) { "decode failed: $path" } }
+        val bitmap = assets.open(path).use { requireNotNull(BitmapFactory.decodeStream(it, null, opts)) { "decode failed: $path" } }
+        bitmap.prepareToDraw() // upload to the GPU now, not during the first swipe frame
+        return bitmap
     }
 }
