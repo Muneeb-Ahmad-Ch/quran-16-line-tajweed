@@ -153,3 +153,8 @@ Project structure, persistence (e.g. DataStore / Room), image library and pager 
 ## Changes in v1.4
 - Surah rows show verse count (Hafs/Kufi, 6,236 total), page count and start page. Para and Manzil rows show page count and page range.
 - Surah end pages: a Surah ends on the page before the next Surah when that Surah's banner is the first line of its page (23 Surahs, checked on every start page). Otherwise it ends on the shared page.
+
+## Changes in v1.5
+- Page style is independent of the app theme: Auto (printed page in light theme, Night in dark), Original, Night, Invert, Warm. The "dark mode on pages too" switch is gone; installs that had it migrate to Auto.
+- Reader ⋮ menu: the app Dark mode switch is replaced by a Page style picker (radio list). Fill screen stays.
+- Page audit (all 548 pages): printed page numbers match 2–549 in order; no duplicates, blank areas, blur or skew; layout and Surah banners checked on thumbnails. No misprints found.

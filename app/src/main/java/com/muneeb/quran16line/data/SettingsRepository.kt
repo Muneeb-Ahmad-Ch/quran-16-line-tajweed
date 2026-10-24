@@ -17,7 +17,8 @@ class SettingsRepository(
 ) {
     private object Keys {
         val theme = stringPreferencesKey("theme")
-        val darkPages = booleanPreferencesKey("dark_pages")
+        /** Pre-1.5 "dark mode on pages too" switch; its presence means the stored style was dark-only. */
+        val legacyDarkPages = booleanPreferencesKey("dark_pages")
         val pageStyle = stringPreferencesKey("page_style")
         val keepScreenOn = booleanPreferencesKey("keep_screen_on")
         val stretchPages = booleanPreferencesKey("stretch_pages")
@@ -33,8 +34,7 @@ class SettingsRepository(
         val d = Settings()
         return Settings(
             theme = enum(Keys.theme, d.theme),
-            darkPages = this[Keys.darkPages] ?: d.darkPages,
-            pageStyle = enum(Keys.pageStyle, d.pageStyle),
+            pageStyle = if (contains(Keys.legacyDarkPages)) d.pageStyle else enum(Keys.pageStyle, d.pageStyle),
             keepScreenOn = this[Keys.keepScreenOn] ?: d.keepScreenOn,
             stretchPages = this[Keys.stretchPages] ?: d.stretchPages,
             autoResume = this[Keys.autoResume] ?: d.autoResume,
@@ -56,7 +56,7 @@ class SettingsRepository(
         store.edit { p ->
             val next = transform(p.toSettings())
             p[Keys.theme] = next.theme.name
-            p[Keys.darkPages] = next.darkPages
+            p.remove(Keys.legacyDarkPages)
             p[Keys.pageStyle] = next.pageStyle.name
             p[Keys.keepScreenOn] = next.keepScreenOn
             p[Keys.stretchPages] = next.stretchPages

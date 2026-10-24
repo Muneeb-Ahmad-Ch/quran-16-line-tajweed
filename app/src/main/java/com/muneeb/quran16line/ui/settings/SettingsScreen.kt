@@ -53,6 +53,7 @@ import com.muneeb.quran16line.pages.letterboxColor
 import com.muneeb.quran16line.pages.pageColorFilter
 import com.muneeb.quran16line.ui.AppViewModel
 import com.muneeb.quran16line.ui.Screen
+import com.muneeb.quran16line.ui.reader.effectivePageStyle
 import com.muneeb.quran16line.ui.safeBottomPadding
 import com.muneeb.quran16line.ui.safeTopPadding
 
@@ -71,14 +72,8 @@ fun SettingsScreen(vm: AppViewModel, s: Settings, dark: Boolean, onBack: () -> U
                     ) { t -> vm.updateSettings { it.copy(theme = t) } }
                 }
                 Divider()
-                SwitchItem(
-                    "Dark mode on Quran pages too",
-                    "Off = only menus go dark, pages stay as printed",
-                    s.darkPages,
-                ) { on -> vm.updateSettings { it.copy(darkPages = on) } }
-                Divider()
-                Item("Quran page style in dark mode") {
-                    StyleThumbs(vm, s) { st -> vm.updateSettings { it.copy(pageStyle = st) } }
+                Item("Quran page style") {
+                    StyleThumbs(vm, s, dark) { st -> vm.updateSettings { it.copy(pageStyle = st) } }
                 }
             }
             Section("Reading") {
@@ -189,15 +184,16 @@ private fun <T> Segmented(options: List<Pair<T, String>>, selected: T, onSelect:
 }
 
 @Composable
-private fun StyleThumbs(vm: AppViewModel, s: Settings, onSelect: (PageStyle) -> Unit) {
+private fun StyleThumbs(vm: AppViewModel, s: Settings, dark: Boolean, onSelect: (PageStyle) -> Unit) {
     val path = PageAssets.page(s.lastPage)
     var thumb by remember(path) { mutableStateOf<ImageBitmap?>(vm.images.cached(path, THUMB_WIDTH)) }
     LaunchedEffect(path) { if (thumb == null) thumb = vm.images.load(path, THUMB_WIDTH) }
     val info = vm.images.manifest.page
-    Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-        PageStyle.entries.forEach { style ->
-            val selected = style == s.pageStyle
-            Column(Modifier.weight(1f).clickable { onSelect(style) }, horizontalAlignment = Alignment.CenterHorizontally) {
+    Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+        PageStyle.entries.forEach { choice ->
+            val selected = choice == s.pageStyle
+            val style = effectivePageStyle(s.copy(pageStyle = choice), dark)
+            Column(Modifier.weight(1f).clickable { onSelect(choice) }, horizontalAlignment = Alignment.CenterHorizontally) {
                 Box(
                     Modifier
                         .fillMaxWidth()
@@ -218,7 +214,7 @@ private fun StyleThumbs(vm: AppViewModel, s: Settings, onSelect: (PageStyle) -> 
                     }
                 }
                 Text(
-                    style.label(),
+                    choice.label(),
                     style = MaterialTheme.typography.labelMedium,
                     color = if (selected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant,
                     modifier = Modifier.padding(top = 6.dp),
@@ -228,7 +224,8 @@ private fun StyleThumbs(vm: AppViewModel, s: Settings, onSelect: (PageStyle) -> 
     }
 }
 
-private fun PageStyle.label() = when (this) {
+fun PageStyle.label() = when (this) {
+    PageStyle.AUTO -> "Auto"
     PageStyle.ORIGINAL -> "Original"
     PageStyle.NIGHT -> "Night"
     PageStyle.INVERT -> "Invert"

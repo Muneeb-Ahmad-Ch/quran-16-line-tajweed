@@ -14,13 +14,15 @@ import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Switch
 import androidx.compose.ui.draw.scale
-import com.muneeb.quran16line.data.AppTheme
 import com.muneeb.quran16line.ui.Screen
+import com.muneeb.quran16line.ui.settings.label
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.displayCutout
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.WindowInsetsSides
@@ -64,9 +66,12 @@ import kotlinx.coroutines.delay
 
 private const val PREFETCH_RADIUS = 2
 
-/** Effective page style: dark styles only when the app is dark and "dark mode on pages" is on. */
+/** The style pages are actually drawn in: AUTO resolves from the app theme. */
 fun effectivePageStyle(s: Settings, dark: Boolean): PageStyle =
-    if (dark && s.darkPages) s.pageStyle else PageStyle.ORIGINAL
+    when (s.pageStyle) {
+        PageStyle.AUTO -> if (dark) PageStyle.NIGHT else PageStyle.ORIGINAL
+        else -> s.pageStyle
+    }
 
 @Composable
 fun ReaderScreen(vm: AppViewModel, s: Settings, dark: Boolean, startPage: Int, onHome: () -> Unit, open: (Screen) -> Unit) {
@@ -114,7 +119,6 @@ fun ReaderScreen(vm: AppViewModel, s: Settings, dark: Boolean, startPage: Int, o
         val marked = bookmarks.any { it.page == currentPage }
         ReaderMenu(
             s = s,
-            dark = dark,
             darkPage = background.luminance() < 0.5f,
             marked = marked,
             onBookmark = { sheetFor = currentPage },
@@ -173,7 +177,6 @@ fun ReaderScreen(vm: AppViewModel, s: Settings, dark: Boolean, startPage: Int, o
 @Composable
 private fun BoxScope.ReaderMenu(
     s: Settings,
-    dark: Boolean,
     darkPage: Boolean,
     marked: Boolean,
     onBookmark: () -> Unit,
@@ -223,9 +226,21 @@ private fun BoxScope.ReaderMenu(
                 onClick = { open = false; onIndex() },
             )
             HorizontalDivider()
-            ToggleItem("Dark mode", dark) {
-                update { it.copy(theme = if (dark) AppTheme.LIGHT else AppTheme.DARK) }
+            Text(
+                "Page style",
+                style = MaterialTheme.typography.labelMedium,
+                color = MaterialTheme.colorScheme.primary,
+                modifier = Modifier.padding(start = 16.dp, top = 8.dp, bottom = 2.dp),
+            )
+            PageStyle.entries.forEach { style ->
+                DropdownMenuItem(
+                    text = { Text(style.label()) },
+                    leadingIcon = { RadioButton(selected = s.pageStyle == style, onClick = null) },
+                    onClick = { update { it.copy(pageStyle = style) } },
+                    modifier = Modifier.height(40.dp),
+                )
             }
+            HorizontalDivider()
             ToggleItem("Fill screen", s.stretchPages) {
                 update { it.copy(stretchPages = !it.stretchPages) }
             }

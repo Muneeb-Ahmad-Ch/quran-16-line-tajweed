@@ -71,14 +71,14 @@ private fun then(first: FloatArray, second: FloatArray): FloatArray {
 }
 
 fun pageStyleMatrix(style: PageStyle): FloatArray = when (style) {
-    PageStyle.ORIGINAL -> IDENTITY
+    PageStyle.AUTO, PageStyle.ORIGINAL -> IDENTITY
     PageStyle.INVERT -> INVERT
     PageStyle.NIGHT -> then(INVERT, hueRotate(180f))
     PageStyle.WARM -> then(brightness(0.62f), sepia(0.25f))
 }
 
 private val filters = PageStyle.entries.associateWith { style ->
-    if (style == PageStyle.ORIGINAL) null else ColorFilter.colorMatrix(ColorMatrix(pageStyleMatrix(style)))
+    if (style == PageStyle.ORIGINAL || style == PageStyle.AUTO) null else ColorFilter.colorMatrix(ColorMatrix(pageStyleMatrix(style)))
 }
 
 fun pageColorFilter(style: PageStyle): ColorFilter? = filters[style]

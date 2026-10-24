@@ -1,5 +1,6 @@
 package com.muneeb.quran16line.data
 
+import androidx.datastore.preferences.core.edit
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
@@ -12,8 +13,7 @@ class SettingsRepositoryTest {
         val s = SettingsRepository(testStore(backgroundScope)).settings.first()
         assertEquals(Settings(), s)
         assertEquals(AppTheme.SYSTEM, s.theme)
-        assertEquals(true, s.darkPages)
-        assertEquals(PageStyle.NIGHT, s.pageStyle)
+        assertEquals(PageStyle.AUTO, s.pageStyle)
         assertEquals(true, s.keepScreenOn)
         assertEquals(false, s.stretchPages)
         assertEquals(false, s.autoResume)
@@ -46,11 +46,10 @@ class SettingsRepositoryTest {
     @Test
     fun settingsPersistAcrossInstances() = runTest {
         val store = testStore(backgroundScope)
-        SettingsRepository(store).update { it.copy(theme = AppTheme.DARK, pageStyle = PageStyle.WARM, darkPages = false, keepScreenOn = false) }
+        SettingsRepository(store).update { it.copy(theme = AppTheme.DARK, pageStyle = PageStyle.WARM, keepScreenOn = false) }
         val s = SettingsRepository(store).settings.first()
         assertEquals(AppTheme.DARK, s.theme)
         assertEquals(PageStyle.WARM, s.pageStyle)
-        assertEquals(false, s.darkPages)
         assertEquals(false, s.keepScreenOn)
     }
 
@@ -91,5 +90,18 @@ class SettingsRepositoryTest {
         repo.upsertBookmark(20, "b")
         repo.removeBookmark(10)
         assertEquals(listOf(20), repo.bookmarks.first().map { it.page })
+    }
+
+    @Test
+    fun legacyDarkOnlyStyleBecomesAuto() = runTest {
+        val store = testStore(backgroundScope)
+        store.edit {
+            it[androidx.datastore.preferences.core.booleanPreferencesKey("dark_pages")] = true
+            it[androidx.datastore.preferences.core.stringPreferencesKey("page_style")] = "NIGHT"
+        }
+        val repo = SettingsRepository(store)
+        assertEquals(PageStyle.AUTO, repo.settings.first().pageStyle)
+        repo.update { it.copy(pageStyle = PageStyle.WARM) }
+        assertEquals(PageStyle.WARM, repo.settings.first().pageStyle)
     }
 }

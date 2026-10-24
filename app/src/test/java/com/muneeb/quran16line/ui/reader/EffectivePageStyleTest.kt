@@ -7,17 +7,18 @@ import org.junit.Test
 
 class EffectivePageStyleTest {
     @Test
-    fun lightThemeAlwaysOriginal() {
-        assertEquals(PageStyle.ORIGINAL, effectivePageStyle(Settings(pageStyle = PageStyle.WARM), dark = false))
+    fun autoFollowsAppTheme() {
+        assertEquals(PageStyle.ORIGINAL, effectivePageStyle(Settings(pageStyle = PageStyle.AUTO), dark = false))
+        assertEquals(PageStyle.NIGHT, effectivePageStyle(Settings(pageStyle = PageStyle.AUTO), dark = true))
     }
 
     @Test
-    fun darkWithPagesOnUsesChosenStyle() {
-        assertEquals(PageStyle.INVERT, effectivePageStyle(Settings(pageStyle = PageStyle.INVERT, darkPages = true), dark = true))
+    fun chosenStyleAppliesInLightTheme() {
+        assertEquals(PageStyle.WARM, effectivePageStyle(Settings(pageStyle = PageStyle.WARM), dark = false))
     }
 
     @Test
-    fun darkWithPagesOffKeepsPrintedPage() {
-        assertEquals(PageStyle.ORIGINAL, effectivePageStyle(Settings(pageStyle = PageStyle.NIGHT, darkPages = false), dark = true))
+    fun originalStaysPrintedInDarkTheme() {
+        assertEquals(PageStyle.ORIGINAL, effectivePageStyle(Settings(pageStyle = PageStyle.ORIGINAL), dark = true))
     }
 }
