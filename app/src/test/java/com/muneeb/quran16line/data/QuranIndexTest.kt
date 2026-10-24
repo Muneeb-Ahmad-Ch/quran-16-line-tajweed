@@ -71,4 +71,41 @@ class QuranIndexTest {
     fun defaultName() {
         assertEquals("Sayaqool – Al-Baqarah – Pg 24", QuranIndex.defaultBookmarkName(24))
     }
+
+    @Test
+    fun ayahCounts() {
+        val s = QuranIndex.surahs
+        assertEquals(6236, s.sumOf { it.ayahs })
+        assertEquals(7, s[0].ayahs)
+        assertEquals(286, s[1].ayahs)
+        assertEquals(83, s[35].ayahs)
+        assertEquals(6, s[113].ayahs)
+    }
+
+    @Test
+    fun surahPageRanges() {
+        val s = QuranIndex.surahs
+        assertEquals(2 to 2, s[0].startPage to s[0].endPage)       // Al-Fatihah alone on page 2
+        assertEquals(3 to 46, s[1].startPage to s[1].endPage)      // Aal-e-Imran starts mid-page 46
+        assertEquals(44, s[1].pageCount)
+        assertEquals(265 to 275, s[17].startPage to s[17].endPage) // Maryam's banner opens page 276
+        assertEquals(509 to 511, s[66].startPage to s[66].endPage) // Al-Mulk
+        assertEquals(532, s[79].endPage)                           // Abasa ends before At-Takwir at top of 533
+        assertEquals(1, s[80].pageCount)                           // At-Takwir shares page 533
+        assertEquals(549 to 549, s[113].startPage to s[113].endPage)
+        assertTrue(s.zipWithNext().all { (a, b) -> a.endPage in b.startPage - 1..b.startPage })
+    }
+
+    @Test
+    fun paraAndManzilPageCounts() {
+        assertEquals(19, QuranIndex.paras[0].pageCount)
+        assertEquals(18, QuranIndex.paras[1].pageCount)
+        assertEquals(21, QuranIndex.paras[29].pageCount)
+        assertEquals(548, QuranIndex.paras.sumOf { it.pageCount })
+        val m = QuranIndex.manzils
+        assertEquals(255 to 331, m[3].startPage to m[3].endPage)   // Bani Isra'il .. Ash-Shu'ara starts mid-page 331
+        assertEquals(254, m[2].endPage)                             // Bani Isra'il opens page 255
+        assertEquals(549, m[6].endPage)
+        assertEquals(77, m[3].pageCount)
+    }
 }

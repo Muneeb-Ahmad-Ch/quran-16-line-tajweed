@@ -1,10 +1,23 @@
 package com.muneeb.quran16line.data
 
-data class Surah(val number: Int, val nameEn: String, val nameAr: String, val startPage: Int)
+data class Surah(
+    val number: Int,
+    val nameEn: String,
+    val nameAr: String,
+    val startPage: Int,
+    val endPage: Int,
+    val ayahs: Int,
+) {
+    val pageCount: Int get() = endPage - startPage + 1
+}
 
-data class Para(val number: Int, val nameEn: String, val nameAr: String, val startPage: Int, val endPage: Int)
+data class Para(val number: Int, val nameEn: String, val nameAr: String, val startPage: Int, val endPage: Int) {
+    val pageCount: Int get() = endPage - startPage + 1
+}
 
-data class Manzil(val number: Int, val startSurah: Int, val startPage: Int)
+data class Manzil(val number: Int, val startSurah: Int, val startPage: Int, val endPage: Int) {
+    val pageCount: Int get() = endPage - startPage + 1
+}
 
 /** Static index of the 16-line (548 page) Mushaf. Page numbers are the printed ones, 2..549. */
 object QuranIndex {
@@ -54,8 +67,31 @@ object QuranIndex {
         "Al-Ikhlas" to "الإخلاص" to 548, "Al-Falaq" to "الفلق" to 549, "An-Nas" to "الناس" to 549,
     )
 
+    // Verses per Surah (Hafs, Kufi count: 6,236 in total).
+    private val ayahCounts = intArrayOf(
+        7, 286, 200, 176, 120, 165, 206, 75, 129, 109, 123, 111, 43, 52, 99, 128, 111, 110, 98, 135,
+        112, 78, 118, 64, 77, 227, 93, 88, 69, 60, 34, 30, 73, 54, 45, 83, 182, 88, 75, 85,
+        54, 53, 89, 59, 37, 35, 38, 29, 18, 45, 60, 49, 62, 55, 78, 96, 29, 22, 24, 13,
+        14, 11, 11, 18, 12, 12, 30, 52, 52, 44, 28, 28, 20, 56, 40, 31, 50, 40, 46, 42,
+        29, 19, 36, 25, 22, 17, 19, 26, 30, 20, 15, 21, 11, 8, 8, 19, 5, 8, 8, 11,
+        11, 8, 3, 9, 5, 4, 7, 3, 6, 3, 5, 4, 5, 6,
+    )
+
+    // Surahs whose banner is the first line of their start page (checked on every start page),
+    // so the Surah before them ends on the previous page. Every other Surah shares its first page.
+    private val startsAtTopOfPage = setOf(
+        2, 7, 17, 19, 21, 22, 23, 28, 46, 48, 56, 58, 60, 67, 78, 81, 87, 95, 97, 99, 105, 109, 113,
+    )
+
+    /** Last page of something that runs until [nextSurah] begins. */
+    private fun endBefore(nextSurah: Int): Int {
+        val start = surahData[nextSurah - 1].second
+        return if (nextSurah in startsAtTopOfPage) start - 1 else start
+    }
+
     val surahs: List<Surah> = surahData.mapIndexed { i, (names, page) ->
-        Surah(i + 1, names.first, names.second, page)
+        val n = i + 1
+        Surah(n, names.first, names.second, page, if (n == 114) LAST_PAGE else endBefore(n + 1), ayahCounts[i])
     }
 
     private val paraNames = listOf(
@@ -83,8 +119,11 @@ object QuranIndex {
         Para(n, en, ar, paraStart(n), if (n == 30) LAST_PAGE else paraStart(n + 1) - 1)
     }
 
-    val manzils: List<Manzil> = listOf(1, 5, 10, 17, 26, 37, 50).mapIndexed { i, s ->
-        Manzil(i + 1, s, surahs[s - 1].startPage)
+    private val manzilStarts = listOf(1, 5, 10, 17, 26, 37, 50)
+
+    val manzils: List<Manzil> = manzilStarts.mapIndexed { i, s ->
+        val end = manzilStarts.getOrNull(i + 1)?.let(::endBefore) ?: LAST_PAGE
+        Manzil(i + 1, s, surahs[s - 1].startPage, end)
     }
 
     private fun requirePage(p: Int) =

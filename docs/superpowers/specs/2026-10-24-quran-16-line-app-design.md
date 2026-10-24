@@ -149,3 +149,7 @@ Project structure, persistence (e.g. DataStore / Room), image library and pager 
 - **Plain edition removed completely** at the user's request: the converter, assets, Settings, reader menu and credits now cover the tajweed-coloured edition only. App size is about 105 MB. Pages live at `assets/pages/NNNN.webp`; the manifest is `{"page": {...}, "extras": {...}}`.
 - **Surah search** at the top of the Surah tab: number, English or Arabic name, aliases and common spellings, typo-tolerant ranking. It always returns the closest matches.
 - Home, Settings and About keep clear of the larger of the status bar and the display cutout. Leaving the reader also re-shows the system bars explicitly, because some OEMs keep them hidden.
+
+## Changes in v1.4
+- Surah rows show verse count (Hafs/Kufi, 6,236 total), page count and start page. Para and Manzil rows show page count and page range.
+- Surah end pages: a Surah ends on the page before the next Surah when that Surah's banner is the first line of its page (23 Surahs, checked on every start page). Otherwise it ends on the shared page.

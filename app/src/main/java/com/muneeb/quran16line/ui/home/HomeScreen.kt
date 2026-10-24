@@ -243,7 +243,7 @@ private fun IndexRow(number: Int, title: String, subtitle: String, arabic: Strin
         }
         Column(Modifier.weight(1f).padding(start = 14.dp)) {
             Text(title, style = MaterialTheme.typography.bodyLarge, maxLines = 1, overflow = TextOverflow.Ellipsis)
-            Text(subtitle, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+            Text(subtitle, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant, maxLines = 1, overflow = TextOverflow.Ellipsis)
         }
         Text(arabic, style = MaterialTheme.typography.titleMedium, color = MaterialTheme.colorScheme.onSurface)
     }
@@ -312,9 +312,11 @@ private fun SearchField(query: String, onChange: (String) -> Unit, onDone: () ->
     )
 }
 
+private fun pages(n: Int) = if (n == 1) "1 page" else "$n pages"
+
 private fun LazyListScope.surahList(surahs: List<Surah>, showExtras: Boolean, open: (Screen) -> Unit) {
     items(surahs, key = { "s${it.number}" }) { s ->
-        IndexRow(s.number, s.nameEn, "Page ${s.startPage}", s.nameAr) { open(Screen.Reader(s.startPage)) }
+        IndexRow(s.number, s.nameEn, "${s.ayahs} verses · ${pages(s.pageCount)} · from p. ${s.startPage}", s.nameAr) { open(Screen.Reader(s.startPage)) }
     }
     if (showExtras) item(key = "extras") {
         Row(
@@ -333,14 +335,14 @@ private fun LazyListScope.surahList(surahs: List<Surah>, showExtras: Boolean, op
 
 private fun LazyListScope.paraList(open: (Screen) -> Unit) {
     items(QuranIndex.paras, key = { "p${it.number}" }) { p ->
-        IndexRow(p.number, p.nameEn, "Pages ${p.startPage}–${p.endPage}", p.nameAr) { open(Screen.Reader(p.startPage)) }
+        IndexRow(p.number, p.nameEn, "${pages(p.pageCount)} · p. ${p.startPage}–${p.endPage}", p.nameAr) { open(Screen.Reader(p.startPage)) }
     }
 }
 
 private fun LazyListScope.manzilList(open: (Screen) -> Unit) {
     items(QuranIndex.manzils, key = { "m${it.number}" }) { m ->
         val surah = QuranIndex.surahs[m.startSurah - 1]
-        IndexRow(m.number, "Manzil ${m.number}", "From ${surah.nameEn} · Page ${m.startPage}", surah.nameAr) {
+        IndexRow(m.number, "Manzil ${m.number} · ${surah.nameEn}", "${pages(m.pageCount)} · p. ${m.startPage}–${m.endPage}", surah.nameAr) {
             open(Screen.Reader(m.startPage))
         }
     }
