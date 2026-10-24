@@ -1,39 +1,37 @@
 # Quran 16 Line
 
-A simple, fast, offline Android app for reading the 16-line IndoPak Mushaf (548 pages), the print most people in Pakistan and India learn from.
+A simple, fast, offline Android app for reading the 16-line IndoPak Mushaf with colour-coded tajweed (548 pages), the print most people in Pakistan and India learn from.
 
-Open the app, tap **Resume**, and keep reading from where you stopped.
+Open the app, tap **Resume** (or turn on auto-resume), and keep reading from where you stopped.
 
 <p>
   <img src="docs/screenshots/home-light.jpg" width="200" alt="Home screen">
-  <img src="docs/screenshots/reader-light.jpg" width="200" alt="Reading, plain page">
-  <img src="docs/screenshots/reader-night.jpg" width="200" alt="Reading, tajweed page in Night style">
+  <img src="docs/screenshots/reader-night.jpg" width="200" alt="Reading in Night style">
   <img src="docs/screenshots/settings-dark.jpg" width="200" alt="Settings">
 </p>
 
 ## Features
 
-- **Two editions:** Plain and Tajweed colour-coded. Both use the same page numbers, so switching keeps your place.
-- **Resume:** the app remembers the last page you read.
-- **Surah, Para (Juz) and Manzil** lists that jump straight to the right page.
-- **Bookmarks:** tap the small button in the corner while reading. A default name (`Para – Surah – Pg`) is filled in, and you can type your own. Rename or delete them from Home.
-- **Reading screen shows only the page:** full screen, swipe right for the next page (like a printed Mushaf), pinch or double-tap to zoom.
-- **Pages are aligned:** every page is trimmed to its frame and sized identically, so nothing jumps while you swipe.
-- **Light / Dark / System theme.** You choose whether dark mode also applies to the Quran pages, and in which style: Original, Night, Invert or Warm.
+- **Resume:** remembers the last page you read. The Resume button sits at the bottom for one-handed use, or you can turn on **Open last page on start**.
+- **Surah, Para (Juz) and Manzil** lists that jump straight to the right page. Swipe between the lists.
+- **Surah search** that forgives spelling: type a number, the English or Arabic name, a common spelling (Yaseen, Rehman, Kahaf, Mudassir…) or another name (Insan, Fussilat, Ghafir…). It always shows the closest matches.
+- **Bookmarks** with a default name (`Para – Surah – Pg`) or your own. Rename or delete them from Home.
+- **Clean reading screen:** only the page and a faint ⋮ menu in the corner (bookmark, index, quick Dark mode and Fill screen switches, settings). Swipe right for the next page, like a printed Mushaf. Pinch or double-tap to zoom.
+- **Aligned pages:** every page is trimmed to its frame and sized identically, so nothing jumps while you swipe.
+- **Fill screen** option to stretch pages over the whole screen. Pages always stay clear of a punch-hole or notch.
+- **Light / Dark / System theme.** You choose whether dark mode also applies to the pages, and in which style: Original, Night, Invert or Warm.
 - **Extras:** Dua Khatm-ul-Quran, stop signs (Rumooz-e-Auqaf), and tajweed rules in Urdu, English, Persian, Pashto and Sindhi.
-- Fully offline. No ads, no tracking, no internet permission. Android 7.0+.
+- Fully offline. No ads, no tracking, no internet permission. Android 7.0+. About 105 MB.
 
 ## Install
 
-Download `app-release.apk` from the [Releases](../../releases) page and open it on your phone (allow "install unknown apps" when asked). It's about 270 MB because both editions' pages are inside.
+Download `app-release.apk` from the [Releases](../../releases) page and open it on your phone. Allow "install unknown apps" when asked.
 
 ## Build it yourself
 
 The page images aren't in this repo (too big for git). Rebuild them from the source PDFs:
 
-1. Download the 30 Para PDFs of each edition into:
-   - `source-pdfs/plain (tanzilone)/Para 01.pdf` … `Para 30.pdf` from <https://tanzilone.wordpress.com/>
-   - `source-pdfs/tajweed coloured (myonlinestudent)/Para 01.pdf` … `Para 30.pdf` from <https://myonlinestudent.wordpress.com/read-quran/>
+1. Download the 30 Para PDFs from <https://myonlinestudent.wordpress.com/read-quran/> into `source-pdfs/tajweed coloured (myonlinestudent)/Para 01.pdf` … `Para 30.pdf`.
 2. Convert and check the pages (Python 3, see [tools/README.md](tools/README.md)):
    ```bash
    pip install -r tools/requirements.txt
@@ -44,14 +42,13 @@ The page images aren't in this repo (too big for git). Rebuild them from the sou
    ```bash
    ./gradlew :app:assembleRelease
    ```
-   The APK is written to `app/build/outputs/apk/release/`.
+   The release is signed with `release.keystore` if `keystore.properties` exists (both kept out of git). Otherwise it falls back to the debug key.
 
 Tests: `python -m pytest tools` and `./gradlew :app:testDebugUnitTest`.
 
 ## Credits and sources
 
-- **Tajweed coloured edition:** "Quran 16 Line" by Qamar Apps (the PDF states CC BY-SA 4.0). The printed edition is credited to Pak Company (registered), March 2011, proofread by the Punjab Auqaf department. Downloaded from myonlinestudent.wordpress.com.
-- **Plain edition:** downloaded from tanzilone.wordpress.com. The original publisher isn't stated.
+- "Quran 16 Line" by Qamar Apps (the PDF states CC BY-SA 4.0). The printed edition is credited to Pak Company (registered), March 2011, proofread by the Punjab Auqaf department. Downloaded from myonlinestudent.wordpress.com.
 - **Changes made:** pages were trimmed to their frame, aligned and resized for phone screens. The text is unchanged.
 
-The original publishers of these scans couldn't be fully identified. If you hold rights to this material and want it removed, please [open an issue](../../issues) and it will be taken down.
+The original publisher of these scans couldn't be fully confirmed. If you hold rights to this material and want it removed, please [open an issue](../../issues) and it will be taken down.

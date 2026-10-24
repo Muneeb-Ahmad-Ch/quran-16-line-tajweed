@@ -14,9 +14,7 @@ import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -48,7 +46,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.muneeb.quran16line.data.AppTheme
-import com.muneeb.quran16line.data.MushafVersion
 import com.muneeb.quran16line.data.PageStyle
 import com.muneeb.quran16line.data.Settings
 import com.muneeb.quran16line.pages.PageAssets
@@ -56,22 +53,16 @@ import com.muneeb.quran16line.pages.letterboxColor
 import com.muneeb.quran16line.pages.pageColorFilter
 import com.muneeb.quran16line.ui.AppViewModel
 import com.muneeb.quran16line.ui.Screen
+import com.muneeb.quran16line.ui.safeBottomPadding
+import com.muneeb.quran16line.ui.safeTopPadding
 
 private const val THUMB_WIDTH = 240
 
 @Composable
 fun SettingsScreen(vm: AppViewModel, s: Settings, dark: Boolean, onBack: () -> Unit, open: (Screen) -> Unit) {
-    Column(Modifier.fillMaxSize().statusBarsPadding()) {
+    Column(Modifier.fillMaxSize().safeTopPadding()) {
         TopBar("Settings", onBack)
-        Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(bottom = 24.dp).navigationBarsPadding()) {
-            Section("Quran") {
-                Item("Mushaf version") {
-                    Segmented(
-                        options = listOf(MushafVersion.PLAIN to "Plain", MushafVersion.COLOR to "Tajweed coloured"),
-                        selected = s.version,
-                    ) { v -> vm.updateSettings { it.copy(version = v) } }
-                }
-            }
+        Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(bottom = 24.dp).safeBottomPadding()) {
             Section("Appearance") {
                 Item("App theme") {
                     Segmented(
@@ -115,7 +106,7 @@ fun SettingsScreen(vm: AppViewModel, s: Settings, dark: Boolean, onBack: () -> U
                     Column(Modifier.weight(1f)) {
                         Text("Credits & sources", style = MaterialTheme.typography.bodyLarge, fontWeight = FontWeight.Medium)
                         Text(
-                            "Pak Company · Qamar Apps · tanzilone · myonlinestudent",
+                            "Pak Company · Qamar Apps · myonlinestudent",
                             style = MaterialTheme.typography.bodySmall,
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
                         )
@@ -199,10 +190,10 @@ private fun <T> Segmented(options: List<Pair<T, String>>, selected: T, onSelect:
 
 @Composable
 private fun StyleThumbs(vm: AppViewModel, s: Settings, onSelect: (PageStyle) -> Unit) {
-    val path = PageAssets.page(s.version, s.lastPage)
+    val path = PageAssets.page(s.lastPage)
     var thumb by remember(path) { mutableStateOf<ImageBitmap?>(vm.images.cached(path, THUMB_WIDTH)) }
     LaunchedEffect(path) { if (thumb == null) thumb = vm.images.load(path, THUMB_WIDTH) }
-    val info = vm.images.manifest.of(s.version)
+    val info = vm.images.manifest.page
     Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
         PageStyle.entries.forEach { style ->
             val selected = style == s.pageStyle

@@ -6,7 +6,6 @@ import android.graphics.BitmapFactory
 import android.util.LruCache
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.asImageBitmap
-import com.muneeb.quran16line.data.MushafVersion
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
@@ -18,7 +17,7 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 
 object PageAssets {
-    fun page(version: MushafVersion, page: Int) = "pages/${version.assetDir}/%04d.webp".format(page)
+    fun page(page: Int) = "pages/%04d.webp".format(page)
     fun extra(i: Int) = "extras/%02d.webp".format(i)
     const val MANIFEST = "pages/manifest.json"
 }
@@ -33,9 +32,7 @@ data class VersionInfo(val width: Int, val height: Int, val bg: String) {
 data class ExtrasInfo(val count: Int)
 
 @Serializable
-data class PageManifest(val plain: VersionInfo, val color: VersionInfo, val extras: ExtrasInfo) {
-    fun of(version: MushafVersion) = if (version == MushafVersion.PLAIN) plain else color
-
+data class PageManifest(val page: VersionInfo, val extras: ExtrasInfo) {
     companion object {
         private val json = Json { ignoreUnknownKeys = true }
         fun parse(text: String): PageManifest = json.decodeFromString(text)

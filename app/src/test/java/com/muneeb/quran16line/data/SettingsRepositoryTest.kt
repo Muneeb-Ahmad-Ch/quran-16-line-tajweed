@@ -11,7 +11,6 @@ class SettingsRepositoryTest {
     fun defaults() = runTest {
         val s = SettingsRepository(testStore(backgroundScope)).settings.first()
         assertEquals(Settings(), s)
-        assertEquals(MushafVersion.COLOR, s.version)
         assertEquals(AppTheme.SYSTEM, s.theme)
         assertEquals(true, s.darkPages)
         assertEquals(PageStyle.NIGHT, s.pageStyle)
@@ -35,13 +34,13 @@ class SettingsRepositoryTest {
     }
 
     @Test
-    fun versionSwitchKeepsLastPage() = runTest {
+    fun settingChangeKeepsLastPage() = runTest {
         val repo = SettingsRepository(testStore(backgroundScope))
         repo.setLastPage(300)
-        repo.update { it.copy(version = MushafVersion.PLAIN) }
+        repo.update { it.copy(theme = AppTheme.DARK) }
         val s = repo.settings.first()
         assertEquals(300, s.lastPage)
-        assertEquals(MushafVersion.PLAIN, s.version)
+        assertEquals(AppTheme.DARK, s.theme)
     }
 
     @Test

@@ -17,7 +17,6 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Switch
 import androidx.compose.ui.draw.scale
 import com.muneeb.quran16line.data.AppTheme
-import com.muneeb.quran16line.data.MushafVersion
 import com.muneeb.quran16line.ui.Screen
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.displayCutout
@@ -72,7 +71,7 @@ fun effectivePageStyle(s: Settings, dark: Boolean): PageStyle =
 @Composable
 fun ReaderScreen(vm: AppViewModel, s: Settings, dark: Boolean, startPage: Int, onHome: () -> Unit, open: (Screen) -> Unit) {
     val images = vm.images
-    val info = images.manifest.of(s.version)
+    val info = images.manifest.page
     val style = effectivePageStyle(s, dark)
     val filter = pageColorFilter(style)
     val background = letterboxColor(Color(info.bgArgb), style)
@@ -97,18 +96,18 @@ fun ReaderScreen(vm: AppViewModel, s: Settings, dark: Boolean, startPage: Int, o
                 modifier = Modifier.fillMaxSize().windowInsetsPadding(WindowInsets.displayCutout),
             ) { index ->
                 CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Ltr) {
-                    ZoomablePage(PageAssets.page(s.version, index + QuranIndex.FIRST_PAGE), images, targetWidth, filter, s.stretchPages)
+                    ZoomablePage(PageAssets.page(index + QuranIndex.FIRST_PAGE), images, targetWidth, filter, s.stretchPages)
                 }
             }
         }
 
-        LaunchedEffect(pager.settledPage, s.version, targetWidth) {
+        LaunchedEffect(pager.settledPage, targetWidth) {
             val page = pager.settledPage + QuranIndex.FIRST_PAGE
             vm.onPageShown(page)
             val around = (page - PREFETCH_RADIUS..page + PREFETCH_RADIUS)
                 .filter { it in QuranIndex.FIRST_PAGE..QuranIndex.LAST_PAGE && it != page }
                 .sortedBy { kotlin.math.abs(it - page) }
-            images.prefetch(around.map { PageAssets.page(s.version, it) }, targetWidth)
+            images.prefetch(around.map { PageAssets.page(it) }, targetWidth)
         }
 
         val currentPage = pager.currentPage + QuranIndex.FIRST_PAGE
@@ -226,9 +225,6 @@ private fun BoxScope.ReaderMenu(
             HorizontalDivider()
             ToggleItem("Dark mode", dark) {
                 update { it.copy(theme = if (dark) AppTheme.LIGHT else AppTheme.DARK) }
-            }
-            ToggleItem("Tajweed colours", s.version == MushafVersion.COLOR) {
-                update { it.copy(version = if (it.version == MushafVersion.COLOR) MushafVersion.PLAIN else MushafVersion.COLOR) }
             }
             ToggleItem("Fill screen", s.stretchPages) {
                 update { it.copy(stretchPages = !it.stretchPages) }

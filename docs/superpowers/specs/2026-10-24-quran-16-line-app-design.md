@@ -144,3 +144,8 @@ Project structure, persistence (e.g. DataStore / Room), image library and pager 
 ## Changes in v1.2
 - Pages (reader and Extras) stay clear of the display cutout (punch-hole / notch) in every mode; stretched pages also keep a 6 dp gap top and bottom.
 - Home tab labels shrink to fit when the phone uses a large font size, instead of being cut off ("Bookma…").
+
+## Changes in v1.3
+- **Plain edition removed completely** at the user's request: the converter, assets, Settings, reader menu and credits now cover the tajweed-coloured edition only. App size is about 105 MB. Pages live at `assets/pages/NNNN.webp`; the manifest is `{"page": {...}, "extras": {...}}`.
+- **Surah search** at the top of the Surah tab: number, English or Arabic name, aliases and common spellings, typo-tolerant ranking. It always returns the closest matches.
+- Home, Settings and About keep clear of the larger of the status bar and the display cutout. Leaving the reader also re-shows the system bars explicitly, because some OEMs keep them hidden.

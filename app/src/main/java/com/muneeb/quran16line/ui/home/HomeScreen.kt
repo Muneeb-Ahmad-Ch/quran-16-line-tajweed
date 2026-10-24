@@ -16,14 +16,22 @@ import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Search
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.text.input.ImeAction
+import com.muneeb.quran16line.data.Surah
+import com.muneeb.quran16line.data.SurahSearch
 import androidx.compose.foundation.text.BasicText
 import androidx.compose.foundation.text.TextAutoSize
 import androidx.compose.material3.LocalContentColor
@@ -75,6 +83,8 @@ import com.muneeb.quran16line.ui.Screen
 import com.muneeb.quran16line.ui.reader.BookmarkSheet
 import com.muneeb.quran16line.ui.reader.effectivePageStyle
 import kotlinx.coroutines.launch
+import com.muneeb.quran16line.ui.safeBottomPadding
+import com.muneeb.quran16line.ui.safeTopPadding
 
 private val tabs = listOf("Surah", "Para", "Manzil", "Bookmarks")
 
@@ -85,7 +95,7 @@ fun HomeScreen(vm: AppViewModel, s: Settings, dark: Boolean, open: (Screen) -> U
     val pager = rememberPagerState { tabs.size }
     val scope = rememberCoroutineScope()
 
-    Column(Modifier.fillMaxSize().statusBarsPadding()) {
+    Column(Modifier.fillMaxSize().safeTopPadding()) {
         Row(
             Modifier.fillMaxWidth().padding(start = 20.dp, end = 8.dp, top = 8.dp),
             verticalAlignment = Alignment.CenterVertically,
@@ -121,12 +131,15 @@ fun HomeScreen(vm: AppViewModel, s: Settings, dark: Boolean, open: (Screen) -> U
 
         // Swipe left/right between the lists, or tap a tab.
         HorizontalPager(pager, Modifier.weight(1f), beyondViewportPageCount = 1, key = { it }) { tab ->
-            LazyColumn(Modifier.fillMaxSize(), contentPadding = PaddingValues(bottom = 8.dp)) {
-                when (tab) {
-                    0 -> surahList(open)
-                    1 -> paraList(open)
-                    2 -> manzilList(open)
-                    else -> bookmarkList(bookmarks, open, onRename = { renaming = it }, onDelete = { vm.removeBookmark(it.page) })
+            if (tab == 0) {
+                SurahTab(open)
+            } else {
+                LazyColumn(Modifier.fillMaxSize(), contentPadding = PaddingValues(bottom = 8.dp)) {
+                    when (tab) {
+                        1 -> paraList(open)
+                        2 -> manzilList(open)
+                        else -> bookmarkList(bookmarks, open, onRename = { renaming = it }, onDelete = { vm.removeBookmark(it.page) })
+                    }
                 }
             }
         }
@@ -149,22 +162,22 @@ fun HomeScreen(vm: AppViewModel, s: Settings, dark: Boolean, open: (Screen) -> U
 @Composable
 private fun ResumeCard(vm: AppViewModel, s: Settings, dark: Boolean, onResume: () -> Unit) {
     val page = s.lastPage
-    val path = PageAssets.page(s.version, page)
+    val path = PageAssets.page(page)
     var thumb by remember(path) { mutableStateOf<ImageBitmap?>(vm.images.cached(path, THUMB_WIDTH)) }
     LaunchedEffect(path) { if (thumb == null) thumb = vm.images.load(path, THUMB_WIDTH) }
     // Decode the resume page (and its neighbours) at reader size now, so Resume opens with no blank frame.
-    val readerWidth = readerTargetWidth(LocalWindowInfo.current.containerSize.width, vm.images.manifest.of(s.version))
-    LaunchedEffect(page, s.version, readerWidth) {
+    val readerWidth = readerTargetWidth(LocalWindowInfo.current.containerSize.width, vm.images.manifest.page)
+    LaunchedEffect(page, readerWidth) {
         val pages = listOf(page, page + 1, page - 1).filter { it in QuranIndex.FIRST_PAGE..QuranIndex.LAST_PAGE }
-        vm.images.prefetch(pages.map { PageAssets.page(s.version, it) }, readerWidth)
+        vm.images.prefetch(pages.map { PageAssets.page(it) }, readerWidth)
     }
     val surah = QuranIndex.surahForPage(page)
     val para = QuranIndex.paraForPage(page)
-    val aspect = vm.images.manifest.of(s.version).aspect
+    val aspect = vm.images.manifest.page.aspect
 
     Row(
         Modifier
-            .navigationBarsPadding()
+            .safeBottomPadding()
             .padding(horizontal = 12.dp, vertical = 10.dp)
             .fillMaxWidth()
             .clip(RoundedCornerShape(18.dp))
@@ -236,11 +249,39 @@ private fun IndexRow(number: Int, title: String, subtitle: String, arabic: Strin
     HorizontalDivider(Modifier.padding(start = 64.dp), color = MaterialTheme.colorScheme.outlineVariant)
 }
 
-private fun LazyListScope.surahList(open: (Screen) -> Unit) {
-    items(QuranIndex.surahs, key = { "s${it.number}" }) { s ->
+@Composable
+private fun SurahTab(open: (Screen) -> Unit) {
+    var query by rememberSaveable { mutableStateOf("") }
+    val results = remember(query) { SurahSearch.search(query) }
+    val keyboard = LocalSoftwareKeyboardController.current
+    Column(Modifier.fillMaxSize()) {
+        OutlinedTextField(
+            value = query,
+            onValueChange = { query = it },
+            singleLine = true,
+            placeholder = { Text("Search Surah: name or number") },
+            leadingIcon = { Icon(Icons.Filled.Search, contentDescription = null) },
+            trailingIcon = {
+                if (query.isNotEmpty()) {
+                    IconButton(onClick = { query = "" }) { Icon(Icons.Filled.Close, contentDescription = "Clear search") }
+                }
+            },
+            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
+            keyboardActions = KeyboardActions(onSearch = { keyboard?.hide() }),
+            shape = RoundedCornerShape(28.dp),
+            modifier = Modifier.fillMaxWidth().padding(horizontal = 12.dp, vertical = 8.dp),
+        )
+        LazyColumn(Modifier.fillMaxSize(), contentPadding = PaddingValues(bottom = 8.dp)) {
+            surahList(results, showExtras = query.isBlank(), open)
+        }
+    }
+}
+
+private fun LazyListScope.surahList(surahs: List<Surah>, showExtras: Boolean, open: (Screen) -> Unit) {
+    items(surahs, key = { "s${it.number}" }) { s ->
         IndexRow(s.number, s.nameEn, "Page ${s.startPage}", s.nameAr) { open(Screen.Reader(s.startPage)) }
     }
-    item(key = "extras") {
+    if (showExtras) item(key = "extras") {
         Row(
             Modifier.fillMaxWidth().clickable { open(Screen.Extras(0)) }.padding(horizontal = 16.dp, vertical = 16.dp),
             verticalAlignment = Alignment.CenterVertically,

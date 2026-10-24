@@ -12,12 +12,12 @@ from concurrent.futures import ProcessPoolExecutor
 
 from PIL import Image
 
-from convert_pages import FIRST_PAGE, LAST_PAGE, detect_frame
+from convert_pages import FIRST_PAGE, LAST_PAGE, detect_frame, page_path
 
 TOLERANCE = 0.01
-SIZE_LIMIT_MB = 280  # 1200px pages; no Play Store limit applies (GitHub release)
+SIZE_LIMIT_MB = 130  # 1200px coloured pages + extras
 # Decorated full-sheet pages whose frame differs by design (checked visually on the contact sheets).
-ALLOW = {"plain": {2, 3, 71, 73, 526, 529, 545, 546, 547, 548}, "color": {2, 3}}
+ALLOW = {2, 3}
 SHEET_PAGES = [2, 3, 20, 21, 22, 181, 182, 547, 548, 549]
 
 
@@ -27,24 +27,24 @@ def _frame(path):
     return img.size, tuple(v * 4 for v in detect_frame(small))
 
 
-def check_version(kind, assets, pool, report):
-    paths = {p: os.path.join(assets, "pages", kind, f"{p:04d}.webp") for p in range(FIRST_PAGE, LAST_PAGE + 1)}
+def check_pages(assets, pool, report):
+    paths = {p: page_path(assets, p) for p in range(FIRST_PAGE, LAST_PAGE + 1)}
     missing = [p for p, path in paths.items() if not os.path.exists(path)]
     if missing:
-        report.append(f"{kind}: MISSING pages {missing[:10]}")
+        report.append(f"MISSING pages {missing[:10]}")
         return False
     results = dict(zip(paths, pool.map(_frame, paths.values(), chunksize=8)))
     sizes = {s for s, _ in results.values()}
     ok = len(sizes) == 1
-    report.append(f"{kind}: {len(paths)} pages, sizes {sizes}")
+    report.append(f"{len(paths)} pages, sizes {sizes}")
     (w, h), = sizes if ok else (next(iter(sizes)),)
     dims = (w, h, w, h)
     for edge, name in enumerate(("left", "top", "right", "bottom")):
         vals = {p: f[edge] for p, (_, f) in results.items()}
         med = statistics.median(vals.values())
         off = sorted(p for p, v in vals.items() if abs(v - med) > TOLERANCE * dims[edge])
-        bad = [p for p in off if p not in ALLOW[kind]]
-        core = [v for p, v in vals.items() if p not in ALLOW[kind]]
+        bad = [p for p in off if p not in ALLOW]
+        core = [v for p, v in vals.items() if p not in ALLOW]
         report.append(f"  {name:6s} median {med:.0f} min {min(core)} max {max(core)} "
                       f"std {statistics.pstdev(core):.2f}px  off>{TOLERANCE:.0%}: {off}")
         ok &= not bad
@@ -54,8 +54,8 @@ def check_version(kind, assets, pool, report):
 
 
 def contact_sheet(assets, out):
-    for kind in ("plain", "color"):
-        ims = [Image.open(os.path.join(assets, "pages", kind, f"{p:04d}.webp")) for p in SHEET_PAGES]
+    for kind in ("pages",):
+        ims = [Image.open(page_path(assets, p)) for p in SHEET_PAGES]
         tw = 288
         th = round(ims[0].height * tw / ims[0].width)
         sheet = Image.new("RGB", ((tw + 8) * 5, (th + 8) * 2), (90, 90, 90))
@@ -72,7 +72,7 @@ def main():
     os.makedirs(args.out, exist_ok=True)
     report = []
     with ProcessPoolExecutor() as pool:
-        ok = all([check_version(k, args.assets, pool, report) for k in ("plain", "color")])
+        ok = check_pages(args.assets, pool, report)
     with open(os.path.join(args.assets, "pages", "manifest.json")) as f:
         report.append("manifest " + json.dumps(json.load(f)))
     extras = sorted(os.listdir(os.path.join(args.assets, "extras")))

@@ -13,6 +13,7 @@ import androidx.compose.runtime.saveable.rememberSaveableStateHolder
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.muneeb.quran16line.data.AppTheme
 import com.muneeb.quran16line.ui.extras.ExtrasScreen
@@ -60,6 +61,13 @@ fun App(vm: AppViewModel) {
             val goBack = { vm.back()?.let { if (it != Screen.Home) saveable.removeState(it.toString()) } }
             BackHandler(enabled = vm.backStack.size > 1) { goBack() }
             val screen = vm.backStack.last()
+            if (screen !is Screen.Reader && screen !is Screen.Extras) {
+                // Belt and braces: some phones keep the bars hidden after the full-screen reader.
+                SideEffect {
+                    WindowCompat.getInsetsController((view.context as Activity).window, view)
+                        .show(WindowInsetsCompat.Type.systemBars())
+                }
+            }
             // Keeps each screen's saved UI state (Home's tab and scroll positions) while it's in the back stack.
             saveable.SaveableStateProvider(screen.toString()) {
                 when (screen) {

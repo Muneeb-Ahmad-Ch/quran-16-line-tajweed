@@ -16,7 +16,6 @@ class SettingsRepository(
     private val clock: () -> Long = System::currentTimeMillis,
 ) {
     private object Keys {
-        val version = stringPreferencesKey("version")
         val theme = stringPreferencesKey("theme")
         val darkPages = booleanPreferencesKey("dark_pages")
         val pageStyle = stringPreferencesKey("page_style")
@@ -33,7 +32,6 @@ class SettingsRepository(
     private fun Preferences.toSettings(): Settings {
         val d = Settings()
         return Settings(
-            version = enum(Keys.version, d.version),
             theme = enum(Keys.theme, d.theme),
             darkPages = this[Keys.darkPages] ?: d.darkPages,
             pageStyle = enum(Keys.pageStyle, d.pageStyle),
@@ -57,7 +55,6 @@ class SettingsRepository(
     suspend fun update(transform: (Settings) -> Settings) {
         store.edit { p ->
             val next = transform(p.toSettings())
-            p[Keys.version] = next.version.name
             p[Keys.theme] = next.theme.name
             p[Keys.darkPages] = next.darkPages
             p[Keys.pageStyle] = next.pageStyle.name
