@@ -1,0 +1,14 @@
+source-pdfs/
+.superpowers/
+app/src/main/assets/pages/
+app/src/main/assets/extras/
+build/
+.gradle/
+local.properties
+*.keystore
+__pycache__/
+.pytest_cache/
+tools/out/
+.idea/
+*.iml
+.kotlin/
