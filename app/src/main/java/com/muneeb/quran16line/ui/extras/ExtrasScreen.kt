@@ -34,7 +34,7 @@ fun ExtrasScreen(vm: AppViewModel, s: Settings, dark: Boolean, startIndex: Int) 
         CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
             HorizontalPager(state = pager, beyondViewportPageCount = 1, modifier = Modifier.fillMaxSize()) { i ->
                 CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Ltr) {
-                    ZoomablePage(PageAssets.extra(i + 1), vm.images, targetWidth, filter)
+                    ZoomablePage(PageAssets.extra(i + 1), vm.images, targetWidth, filter, s.stretchPages)
                 }
             }
         }

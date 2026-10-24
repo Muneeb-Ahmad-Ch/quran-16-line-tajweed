@@ -24,7 +24,8 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -44,10 +45,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -70,15 +70,16 @@ import com.muneeb.quran16line.ui.AppViewModel
 import com.muneeb.quran16line.ui.Screen
 import com.muneeb.quran16line.ui.reader.BookmarkSheet
 import com.muneeb.quran16line.ui.reader.effectivePageStyle
+import kotlinx.coroutines.launch
 
 private val tabs = listOf("Surah", "Para", "Manzil", "Bookmarks")
 
 @Composable
 fun HomeScreen(vm: AppViewModel, s: Settings, dark: Boolean, open: (Screen) -> Unit) {
     val bookmarks by vm.bookmarks.collectAsStateWithLifecycle()
-    var tab by rememberSaveable { mutableIntStateOf(0) }
     var renaming by remember { mutableStateOf<Bookmark?>(null) }
-    val listStates = tabs.map { rememberLazyListState() }
+    val pager = rememberPagerState { tabs.size }
+    val scope = rememberCoroutineScope()
 
     Column(Modifier.fillMaxSize().statusBarsPadding()) {
         Row(
@@ -96,27 +97,30 @@ fun HomeScreen(vm: AppViewModel, s: Settings, dark: Boolean, open: (Screen) -> U
             }
         }
 
-        ResumeCard(vm, s, dark) { open(Screen.Reader(s.lastPage)) }
-
-        PrimaryTabRow(selectedTabIndex = tab, containerColor = MaterialTheme.colorScheme.background) {
+        PrimaryTabRow(selectedTabIndex = pager.currentPage, containerColor = MaterialTheme.colorScheme.background) {
             tabs.forEachIndexed { i, title ->
-                Tab(selected = tab == i, onClick = { tab = i }, text = { Text(title, maxLines = 1) })
+                Tab(
+                    selected = pager.currentPage == i,
+                    onClick = { scope.launch { pager.animateScrollToPage(i) } },
+                    text = { Text(title, maxLines = 1) },
+                )
             }
         }
 
-        LazyColumn(
-            Modifier.fillMaxSize(),
-            state = listStates[tab],
-            contentPadding = PaddingValues(bottom = 24.dp),
-        ) {
-            when (tab) {
-                0 -> surahList(open)
-                1 -> paraList(open)
-                2 -> manzilList(open)
-                else -> bookmarkList(bookmarks, open, onRename = { renaming = it }, onDelete = { vm.removeBookmark(it.page) })
+        // Swipe left/right between the lists, or tap a tab.
+        HorizontalPager(pager, Modifier.weight(1f), beyondViewportPageCount = 1, key = { it }) { tab ->
+            LazyColumn(Modifier.fillMaxSize(), contentPadding = PaddingValues(bottom = 8.dp)) {
+                when (tab) {
+                    0 -> surahList(open)
+                    1 -> paraList(open)
+                    2 -> manzilList(open)
+                    else -> bookmarkList(bookmarks, open, onRename = { renaming = it }, onDelete = { vm.removeBookmark(it.page) })
+                }
             }
-            item { Spacer(Modifier.navigationBarsPadding()) }
         }
+
+        // At the bottom, where a thumb reaches easily.
+        ResumeCard(vm, s, dark) { open(Screen.Reader(s.lastPage)) }
     }
 
     renaming?.let { b ->
@@ -148,18 +152,19 @@ private fun ResumeCard(vm: AppViewModel, s: Settings, dark: Boolean, onResume: (
 
     Row(
         Modifier
-            .padding(16.dp)
+            .navigationBarsPadding()
+            .padding(horizontal = 12.dp, vertical = 10.dp)
             .fillMaxWidth()
             .clip(RoundedCornerShape(18.dp))
             .background(MaterialTheme.colorScheme.surfaceContainerLow)
             .border(1.dp, MaterialTheme.colorScheme.outlineVariant, RoundedCornerShape(18.dp))
             .clickable(onClick = onResume)
-            .padding(12.dp),
+            .padding(10.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Box(
             Modifier
-                .width(64.dp)
+                .width(46.dp)
                 .aspectRatio(aspect)
                 .clip(RoundedCornerShape(6.dp))
                 .background(MaterialTheme.colorScheme.surfaceVariant),
@@ -179,19 +184,19 @@ private fun ResumeCard(vm: AppViewModel, s: Settings, dark: Boolean, onResume: (
                 color = MaterialTheme.colorScheme.primary,
                 letterSpacing = 1.sp,
             )
-            Text(surah.nameEn, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold)
+            Text(surah.nameEn, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold, maxLines = 1, overflow = TextOverflow.Ellipsis)
             Text(
-                "Para ${para.number} · ${para.nameEn} · Page $page",
+                "Para ${para.number} · Page $page",
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
             )
-            Button(onClick = onResume, modifier = Modifier.padding(top = 8.dp).height(36.dp), contentPadding = PaddingValues(horizontal = 16.dp)) {
-                Icon(Icons.Filled.PlayArrow, contentDescription = null, modifier = Modifier.size(18.dp))
-                Spacer(Modifier.width(6.dp))
-                Text("Resume")
-            }
+        }
+        Button(onClick = onResume, modifier = Modifier.padding(start = 8.dp).height(48.dp), contentPadding = PaddingValues(horizontal = 18.dp)) {
+            Icon(Icons.Filled.PlayArrow, contentDescription = null, modifier = Modifier.size(20.dp))
+            Spacer(Modifier.width(6.dp))
+            Text("Resume")
         }
     }
 }

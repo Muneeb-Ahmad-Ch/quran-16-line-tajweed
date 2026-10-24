@@ -134,3 +134,9 @@ Checked across all 60 files:
 
 ## Left to the builder
 Project structure, persistence (e.g. DataStore / Room), image library and pager implementation, exact image resolution, compression and quality, crop detection method, palette, fonts and icons, and test approach.
+
+## Changes in v1.1 (user feedback after first install, 2026-10-24)
+- **Stretch page to fill screen** (Settings → Reading, default off): when on, pages fill the whole screen (FillBounds, 3 dp gap all round) instead of keeping printed proportions. Also a quick switch in the reader menu.
+- **Open last page on start** (Settings → Reading, default off): the app starts on the last page read, with Home underneath so Back lands on Home.
+- **Reader control is now a faint ⋮ menu** (replaces the bookmark button): Bookmark this page / Edit bookmark, Surah / Para index, quick switches for Dark mode, Tajweed colours and Fill screen, and Settings. The button sits in the top-left corner on a soft backdrop matching the page (soft green when the page is bookmarked).
+- **Home:** the tabs are swipeable, and the Continue reading card with a large Resume button moved to the bottom for one-handed use.

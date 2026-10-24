@@ -22,6 +22,10 @@ import com.muneeb.quran16line.ui.settings.AboutScreen
 import com.muneeb.quran16line.ui.settings.SettingsScreen
 import com.muneeb.quran16line.ui.theme.QuranTheme
 
+/** Home, plus the last page on top when auto-resume is on (Back from it lands on Home). */
+fun initialBackStack(s: com.muneeb.quran16line.data.Settings): List<Screen> =
+    if (s.autoResume) listOf(Screen.Home, Screen.Reader(s.lastPage)) else listOf(Screen.Home)
+
 sealed interface Screen {
     data object Home : Screen
     data class Reader(val page: Int) : Screen
@@ -51,7 +55,7 @@ fun App(vm: AppViewModel) {
     QuranTheme(dark = dark) {
         // Surface also sets the default content (text/icon) colour for the theme.
         Surface(Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
-            if (s == null) return@Surface // first disk read still in flight: show only the themed background
+            if (s == null || !vm.ready) return@Surface // first disk read still in flight: show only the themed background
             // Forget a popped screen's saved state, so reopening e.g. Reader(page=21) starts at page 21 again.
             val goBack = { vm.back()?.let { if (it != Screen.Home) saveable.removeState(it.toString()) } }
             BackHandler(enabled = vm.backStack.size > 1) { goBack() }
@@ -60,7 +64,7 @@ fun App(vm: AppViewModel) {
             saveable.SaveableStateProvider(screen.toString()) {
                 when (screen) {
                     Screen.Home -> HomeScreen(vm, s, dark, open = vm::open)
-                    is Screen.Reader -> ReaderScreen(vm, s, dark, startPage = screen.page)
+                    is Screen.Reader -> ReaderScreen(vm, s, dark, startPage = screen.page, onHome = { goBack() }, open = vm::open)
                     Screen.Settings -> SettingsScreen(vm, s, dark, onBack = { goBack() }, open = vm::open)
                     Screen.About -> AboutScreen(onBack = { goBack() })
                     is Screen.Extras -> ExtrasScreen(vm, s, dark, startIndex = screen.index)

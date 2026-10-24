@@ -12,5 +12,9 @@ data class Settings(
     val darkPages: Boolean = true,
     val pageStyle: PageStyle = PageStyle.NIGHT,
     val keepScreenOn: Boolean = true,
+    /** Stretch pages to fill the screen instead of keeping the printed proportions. */
+    val stretchPages: Boolean = false,
+    /** Open straight onto the last page read when the app starts. */
+    val autoResume: Boolean = false,
     val lastPage: Int = QuranIndex.FIRST_PAGE,
 )

@@ -6,11 +6,26 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxScope
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.List
+import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Switch
+import androidx.compose.ui.draw.scale
+import com.muneeb.quran16line.data.AppTheme
+import com.muneeb.quran16line.data.MushafVersion
+import com.muneeb.quran16line.ui.Screen
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.displayCutout
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.WindowInsetsSides
+import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
@@ -31,6 +46,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.luminance
 import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.unit.LayoutDirection
@@ -54,7 +70,7 @@ fun effectivePageStyle(s: Settings, dark: Boolean): PageStyle =
     if (dark && s.darkPages) s.pageStyle else PageStyle.ORIGINAL
 
 @Composable
-fun ReaderScreen(vm: AppViewModel, s: Settings, dark: Boolean, startPage: Int) {
+fun ReaderScreen(vm: AppViewModel, s: Settings, dark: Boolean, startPage: Int, onHome: () -> Unit, open: (Screen) -> Unit) {
     val images = vm.images
     val info = images.manifest.of(s.version)
     val style = effectivePageStyle(s, dark)
@@ -80,7 +96,7 @@ fun ReaderScreen(vm: AppViewModel, s: Settings, dark: Boolean, startPage: Int) {
                 modifier = Modifier.fillMaxSize(),
             ) { index ->
                 CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Ltr) {
-                    ZoomablePage(PageAssets.page(s.version, index + QuranIndex.FIRST_PAGE), images, targetWidth, filter)
+                    ZoomablePage(PageAssets.page(s.version, index + QuranIndex.FIRST_PAGE), images, targetWidth, filter, s.stretchPages)
                 }
             }
         }
@@ -96,24 +112,16 @@ fun ReaderScreen(vm: AppViewModel, s: Settings, dark: Boolean, startPage: Int) {
 
         val currentPage = pager.currentPage + QuranIndex.FIRST_PAGE
         val marked = bookmarks.any { it.page == currentPage }
-        Box(
-            Modifier
-                .align(AbsoluteAlignment.TopLeft)
-                .windowInsetsPadding(WindowInsets.displayCutout)
-                .padding(12.dp)
-                .size(40.dp)
-                .clip(CircleShape)
-                .background(if (marked) MaterialTheme.colorScheme.primary.copy(alpha = 0.75f) else Color.Black.copy(alpha = 0.28f))
-                .clickable { sheetFor = currentPage },
-            contentAlignment = Alignment.Center,
-        ) {
-            Icon(
-                if (marked) AppIcons.Bookmark else AppIcons.BookmarkBorder,
-                contentDescription = if (marked) "Edit bookmark" else "Bookmark this page",
-                tint = Color.White,
-                modifier = Modifier.size(22.dp),
-            )
-        }
+        ReaderMenu(
+            s = s,
+            dark = dark,
+            darkPage = background.luminance() < 0.5f,
+            marked = marked,
+            onBookmark = { sheetFor = currentPage },
+            onIndex = onHome,
+            onSettings = { open(Screen.Settings) },
+            update = vm::updateSettings,
+        )
 
         AnimatedVisibility(
             visible = savedName != null,
@@ -156,4 +164,89 @@ fun ReaderScreen(vm: AppViewModel, s: Settings, dark: Boolean, startPage: Int) {
             onDismiss = { sheetFor = null },
         )
     }
+}
+
+/**
+ * The only control on the reading screen: a deliberately faint ⋮ in the corner (soft green when the
+ * page is bookmarked), on a soft backdrop matching the page so it reads over busy borders. Touch target 44dp.
+ */
+@Composable
+private fun BoxScope.ReaderMenu(
+    s: Settings,
+    dark: Boolean,
+    darkPage: Boolean,
+    marked: Boolean,
+    onBookmark: () -> Unit,
+    onIndex: () -> Unit,
+    onSettings: () -> Unit,
+    update: ((Settings) -> Settings) -> Unit,
+) {
+    var open by remember { mutableStateOf(false) }
+    Box(
+        Modifier
+            .align(AbsoluteAlignment.TopLeft)
+            .windowInsetsPadding(WindowInsets.displayCutout.only(WindowInsetsSides.Horizontal))
+            .padding(10.dp),
+    ) {
+        Box(
+            Modifier.size(44.dp).clip(CircleShape).clickable { open = true },
+            contentAlignment = Alignment.Center,
+        ) {
+            Box(
+                Modifier
+                    .size(32.dp)
+                    .clip(CircleShape)
+                    .background(when {
+                            marked -> MaterialTheme.colorScheme.primary.copy(alpha = 0.30f)
+                            darkPage -> Color.Black.copy(alpha = 0.45f)
+                            else -> Color.White.copy(alpha = 0.70f) // soft backdrop so it reads over busy borders
+                        }),
+                contentAlignment = Alignment.Center,
+            ) {
+                Icon(
+                    Icons.Filled.MoreVert,
+                    contentDescription = "Menu",
+                    tint = if (marked) MaterialTheme.colorScheme.primary.copy(alpha = 0.85f) else Color.Gray.copy(alpha = 0.75f),
+                    modifier = Modifier.size(20.dp),
+                )
+            }
+        }
+        DropdownMenu(expanded = open, onDismissRequest = { open = false }) {
+            DropdownMenuItem(
+                text = { Text(if (marked) "Edit bookmark" else "Bookmark this page") },
+                leadingIcon = { Icon(if (marked) AppIcons.Bookmark else AppIcons.BookmarkBorder, contentDescription = null) },
+                onClick = { open = false; onBookmark() },
+            )
+            DropdownMenuItem(
+                text = { Text("Surah / Para index") },
+                leadingIcon = { Icon(Icons.AutoMirrored.Filled.List, contentDescription = null) },
+                onClick = { open = false; onIndex() },
+            )
+            HorizontalDivider()
+            ToggleItem("Dark mode", dark) {
+                update { it.copy(theme = if (dark) AppTheme.LIGHT else AppTheme.DARK) }
+            }
+            ToggleItem("Tajweed colours", s.version == MushafVersion.COLOR) {
+                update { it.copy(version = if (it.version == MushafVersion.COLOR) MushafVersion.PLAIN else MushafVersion.COLOR) }
+            }
+            ToggleItem("Fill screen", s.stretchPages) {
+                update { it.copy(stretchPages = !it.stretchPages) }
+            }
+            HorizontalDivider()
+            DropdownMenuItem(
+                text = { Text("Settings") },
+                leadingIcon = { Icon(Icons.Filled.Settings, contentDescription = null) },
+                onClick = { open = false; onSettings() },
+            )
+        }
+    }
+}
+
+@Composable
+private fun ToggleItem(label: String, checked: Boolean, onToggle: () -> Unit) {
+    DropdownMenuItem(
+        text = { Text(label) },
+        trailingIcon = { Switch(checked = checked, onCheckedChange = null, modifier = Modifier.scale(0.75f)) },
+        onClick = onToggle,
+    )
 }

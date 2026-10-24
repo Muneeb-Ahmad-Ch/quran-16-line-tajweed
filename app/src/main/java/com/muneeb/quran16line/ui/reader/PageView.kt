@@ -30,11 +30,11 @@ import me.saket.telephoto.zoomable.zoomable
 
 /**
  * One page image: decoded off the main thread (or taken straight from cache), drawn with a
- * few dp of side gap, pinch / double-tap zoomable. Until the bitmap is ready nothing is drawn,
+ * few dp of side gap (all round when [stretch] fills the screen), pinch / double-tap zoomable. Until the bitmap is ready nothing is drawn,
  * so the caller's background shows instead of a spinner.
  */
 @Composable
-fun ZoomablePage(path: String, images: PageImages, targetWidth: Int, colorFilter: ColorFilter?) {
+fun ZoomablePage(path: String, images: PageImages, targetWidth: Int, colorFilter: ColorFilter?, stretch: Boolean) {
     var bitmap by remember(path, targetWidth) { mutableStateOf<ImageBitmap?>(images.cached(path, targetWidth)) }
     if (bitmap == null) {
         LaunchedEffect(path, targetWidth) {
@@ -49,16 +49,17 @@ fun ZoomablePage(path: String, images: PageImages, targetWidth: Int, colorFilter
     }
     val zoom = rememberZoomableState(zoomSpec = ZoomSpec(maxZoomFactor = 4f))
     val b = bitmap ?: return
-    LaunchedEffect(b) {
+    LaunchedEffect(b, stretch) {
         zoom.setContentLocation(
-            ZoomableContentLocation.scaledInsideAndCenterAligned(Size(b.width.toFloat(), b.height.toFloat()))
+            if (stretch) ZoomableContentLocation.SameAsLayoutBounds
+            else ZoomableContentLocation.scaledInsideAndCenterAligned(Size(b.width.toFloat(), b.height.toFloat()))
         )
     }
     Image(
         bitmap = b,
         contentDescription = null,
-        modifier = Modifier.fillMaxSize().zoomable(zoom).padding(horizontal = 3.dp),
-        contentScale = ContentScale.Fit,
+        modifier = Modifier.fillMaxSize().zoomable(zoom).padding(horizontal = 3.dp, vertical = if (stretch) 3.dp else 0.dp),
+        contentScale = if (stretch) ContentScale.FillBounds else ContentScale.Fit,
         colorFilter = colorFilter,
     )
 }

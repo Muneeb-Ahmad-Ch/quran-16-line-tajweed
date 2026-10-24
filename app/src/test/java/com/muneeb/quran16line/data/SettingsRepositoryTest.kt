@@ -16,6 +16,22 @@ class SettingsRepositoryTest {
         assertEquals(true, s.darkPages)
         assertEquals(PageStyle.NIGHT, s.pageStyle)
         assertEquals(true, s.keepScreenOn)
+        assertEquals(false, s.stretchPages)
+        assertEquals(false, s.autoResume)
+    }
+
+    @Test
+    fun autoResumePersists() = runTest {
+        val store = testStore(backgroundScope)
+        SettingsRepository(store).update { it.copy(autoResume = true) }
+        assertEquals(true, SettingsRepository(store).settings.first().autoResume)
+    }
+
+    @Test
+    fun stretchPagesPersists() = runTest {
+        val store = testStore(backgroundScope)
+        SettingsRepository(store).update { it.copy(stretchPages = true) }
+        assertEquals(true, SettingsRepository(store).settings.first().stretchPages)
     }
 
     @Test

@@ -91,6 +91,18 @@ fun SettingsScreen(vm: AppViewModel, s: Settings, dark: Boolean, onBack: () -> U
                 }
             }
             Section("Reading") {
+                SwitchItem(
+                    "Open last page on start",
+                    "Skip the home screen and continue reading straight away",
+                    s.autoResume,
+                ) { on -> vm.updateSettings { it.copy(autoResume = on) } }
+                Divider()
+                SwitchItem(
+                    "Stretch page to fill screen",
+                    "Uses the empty space above and below the page. Text looks taller than in print.",
+                    s.stretchPages,
+                ) { on -> vm.updateSettings { it.copy(stretchPages = on) } }
+                Divider()
                 SwitchItem("Keep screen on while reading", null, s.keepScreenOn) { on ->
                     vm.updateSettings { it.copy(keepScreenOn = on) }
                 }

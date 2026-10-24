@@ -21,6 +21,8 @@ class SettingsRepository(
         val darkPages = booleanPreferencesKey("dark_pages")
         val pageStyle = stringPreferencesKey("page_style")
         val keepScreenOn = booleanPreferencesKey("keep_screen_on")
+        val stretchPages = booleanPreferencesKey("stretch_pages")
+        val autoResume = booleanPreferencesKey("auto_resume")
         val lastPage = intPreferencesKey("last_page")
         val bookmarks = stringPreferencesKey("bookmarks")
     }
@@ -36,6 +38,8 @@ class SettingsRepository(
             darkPages = this[Keys.darkPages] ?: d.darkPages,
             pageStyle = enum(Keys.pageStyle, d.pageStyle),
             keepScreenOn = this[Keys.keepScreenOn] ?: d.keepScreenOn,
+            stretchPages = this[Keys.stretchPages] ?: d.stretchPages,
+            autoResume = this[Keys.autoResume] ?: d.autoResume,
             lastPage = clamp(this[Keys.lastPage] ?: d.lastPage),
         )
     }
@@ -58,6 +62,8 @@ class SettingsRepository(
             p[Keys.darkPages] = next.darkPages
             p[Keys.pageStyle] = next.pageStyle.name
             p[Keys.keepScreenOn] = next.keepScreenOn
+            p[Keys.stretchPages] = next.stretchPages
+            p[Keys.autoResume] = next.autoResume
             p[Keys.lastPage] = clamp(next.lastPage)
         }
     }
