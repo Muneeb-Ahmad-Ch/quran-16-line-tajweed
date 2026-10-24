@@ -24,6 +24,10 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.text.BasicText
+import androidx.compose.foundation.text.TextAutoSize
+import androidx.compose.material3.LocalContentColor
+import androidx.compose.material3.LocalTextStyle
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
@@ -102,7 +106,15 @@ fun HomeScreen(vm: AppViewModel, s: Settings, dark: Boolean, open: (Screen) -> U
                 Tab(
                     selected = pager.currentPage == i,
                     onClick = { scope.launch { pager.animateScrollToPage(i) } },
-                    text = { Text(title, maxLines = 1) },
+                    text = {
+                        // Shrinks to fit when the phone uses a large font size, instead of cutting the word off.
+                        BasicText(
+                            title,
+                            maxLines = 1,
+                            style = LocalTextStyle.current.copy(color = LocalContentColor.current),
+                            autoSize = TextAutoSize.StepBased(minFontSize = 9.sp, maxFontSize = LocalTextStyle.current.fontSize),
+                        )
+                    },
                 )
             }
         }
@@ -268,7 +280,7 @@ private fun LazyListScope.bookmarkList(
     if (bookmarks.isEmpty()) {
         item(key = "empty") {
             Text(
-                "No bookmarks yet.\nWhile reading, tap the bookmark button in the corner to save a page.",
+                "No bookmarks yet.\nWhile reading, tap ⋮ in the top corner and choose \"Bookmark this page\".",
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 modifier = Modifier.fillMaxWidth().padding(32.dp),

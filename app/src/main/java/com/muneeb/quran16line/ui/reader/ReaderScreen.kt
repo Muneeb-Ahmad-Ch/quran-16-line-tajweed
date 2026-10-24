@@ -93,7 +93,8 @@ fun ReaderScreen(vm: AppViewModel, s: Settings, dark: Boolean, startPage: Int, o
                 state = pager,
                 beyondViewportPageCount = 1,
                 key = { it },
-                modifier = Modifier.fillMaxSize(),
+                // Keep pages clear of a punch-hole / notch; the letterbox colour still fills behind it.
+                modifier = Modifier.fillMaxSize().windowInsetsPadding(WindowInsets.displayCutout),
             ) { index ->
                 CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Ltr) {
                     ZoomablePage(PageAssets.page(s.version, index + QuranIndex.FIRST_PAGE), images, targetWidth, filter, s.stretchPages)

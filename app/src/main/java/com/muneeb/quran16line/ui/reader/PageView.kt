@@ -58,7 +58,7 @@ fun ZoomablePage(path: String, images: PageImages, targetWidth: Int, colorFilter
     Image(
         bitmap = b,
         contentDescription = null,
-        modifier = Modifier.fillMaxSize().zoomable(zoom).padding(horizontal = 3.dp, vertical = if (stretch) 3.dp else 0.dp),
+        modifier = Modifier.fillMaxSize().zoomable(zoom).padding(horizontal = 3.dp, vertical = if (stretch) 6.dp else 0.dp),
         contentScale = if (stretch) ContentScale.FillBounds else ContentScale.Fit,
         colorFilter = colorFilter,
     )

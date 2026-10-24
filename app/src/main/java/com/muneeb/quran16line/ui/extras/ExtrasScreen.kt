@@ -2,6 +2,9 @@ package com.muneeb.quran16line.ui.extras
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.BoxWithConstraints
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.displayCutout
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
@@ -32,7 +35,11 @@ fun ExtrasScreen(vm: AppViewModel, s: Settings, dark: Boolean, startIndex: Int) 
     BoxWithConstraints(Modifier.fillMaxSize().background(letterboxColor(Color.White, style))) {
         val targetWidth = with(LocalDensity.current) { maxWidth.roundToPx() }.coerceAtMost(1200)
         CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
-            HorizontalPager(state = pager, beyondViewportPageCount = 1, modifier = Modifier.fillMaxSize()) { i ->
+            HorizontalPager(
+                state = pager,
+                beyondViewportPageCount = 1,
+                modifier = Modifier.fillMaxSize().windowInsetsPadding(WindowInsets.displayCutout),
+            ) { i ->
                 CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Ltr) {
                     ZoomablePage(PageAssets.extra(i + 1), vm.images, targetWidth, filter, s.stretchPages)
                 }

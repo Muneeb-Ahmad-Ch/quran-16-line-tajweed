@@ -140,3 +140,7 @@ Project structure, persistence (e.g. DataStore / Room), image library and pager 
 - **Open last page on start** (Settings → Reading, default off): the app starts on the last page read, with Home underneath so Back lands on Home.
 - **Reader control is now a faint ⋮ menu** (replaces the bookmark button): Bookmark this page / Edit bookmark, Surah / Para index, quick switches for Dark mode, Tajweed colours and Fill screen, and Settings. The button sits in the top-left corner on a soft backdrop matching the page (soft green when the page is bookmarked).
 - **Home:** the tabs are swipeable, and the Continue reading card with a large Resume button moved to the bottom for one-handed use.
+
+## Changes in v1.2
+- Pages (reader and Extras) stay clear of the display cutout (punch-hole / notch) in every mode; stretched pages also keep a 6 dp gap top and bottom.
+- Home tab labels shrink to fit when the phone uses a large font size, instead of being cut off ("Bookma…").
