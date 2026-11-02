@@ -1,0 +1,22 @@
+name: Bug report
+description: Something in the app crashes, looks wrong or doesn't work as expected.
+title: "[Bug] "
+labels: ["bug"]
+body:
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened?
+      description: What did you do, what did you expect, and what happened instead? Screenshots help.
+    validations:
+      required: true
+  - type: input
+    id: phone
+    attributes:
+      label: Phone and Android version
+      placeholder: "e.g. Infinix Note 30, Android 13"
+  - type: input
+    id: version
+    attributes:
+      label: App version
+      placeholder: "1.5"

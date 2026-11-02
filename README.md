@@ -72,6 +72,18 @@ The page images aren't in this repo (too big for git). Rebuild them from the sou
 
 Tests: `python -m pytest tools` and `./gradlew :app:testDebugUnitTest`.
 
+## Found a mistake? Please let me know
+
+This app was made with great care, but it was made by a human, and humans make mistakes. If you notice anything wrong, please [report it](../../issues/new/choose) so it can be corrected as soon as possible. That includes:
+
+- a page that is missing, repeated, cut off or in the wrong place
+- a wrong Surah, Para, Manzil, verse count or page number
+- a bug, crash or anything that doesn't work as expected
+
+Any mistake in this app is unintentional. May Allah forgive our shortcomings and accept this small effort.
+
+اگر آپ کو اس ایپ میں کوئی غلطی نظر آئے تو براہِ کرم ضرور بتائیں تاکہ اسے درست کیا جا سکے۔ کوئی بھی غلطی جان بوجھ کر نہیں کی گئی۔
+
 ## Credits and sources
 
 - "Quran 16 Line" by Qamar Apps (the PDF states CC BY-SA 4.0). The printed edition is credited to Pak Company (registered), March 2011, proofread by the Punjab Auqaf department. Downloaded from myonlinestudent.wordpress.com.

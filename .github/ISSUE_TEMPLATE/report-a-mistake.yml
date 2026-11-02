@@ -1,0 +1,30 @@
+name: Report a mistake in the Quran pages or index
+description: A missing, repeated or misplaced page, or a wrong Surah, Para, Manzil, verse count or page number.
+title: "[Mistake] Page "
+labels: ["mistake"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        JazakAllah khair for helping correct this app. Any mistake in it is unintentional.
+  - type: input
+    id: page
+    attributes:
+      label: Page number
+      description: The page number printed on the page, or the Surah / Para you opened.
+      placeholder: "e.g. 397, or Surah Ya-Sin"
+    validations:
+      required: true
+  - type: textarea
+    id: what
+    attributes:
+      label: What is wrong?
+      description: Describe the mistake. A screenshot helps a lot.
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: App version
+      description: Settings → Credits & sources, or the release you downloaded.
+      placeholder: "1.5"

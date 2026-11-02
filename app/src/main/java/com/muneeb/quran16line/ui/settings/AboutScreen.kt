@@ -11,10 +11,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.muneeb.quran16line.BuildConfig
 import com.muneeb.quran16line.ui.safeBottomPadding
 import com.muneeb.quran16line.ui.safeTopPadding
 
 private val credits = listOf(
+    "Found a mistake?" to "This app was made with great care, but humans make mistakes. If you notice a missing or " +
+        "misplaced page, a wrong Surah, Para or page number, or any bug, please report it on the project's " +
+        "GitHub page (Issues → Report a mistake) so it can be corrected. Any mistake is unintentional. " +
+        "May Allah forgive our shortcomings.",
     "Mushaf" to "16-line IndoPak Mushaf with colour-coded tajweed, 548 pages (pages 2–549).",
     "Source" to "“Quran 16 Line” by Qamar Apps (stated in the PDF as CC BY-SA 4.0). " +
         "Printed edition credited to Pak Company (registered), March 2011, proofread by the Punjab Auqaf department. " +
@@ -23,7 +28,7 @@ private val credits = listOf(
     "Takedown" to "The original publisher of these scans could not be fully confirmed. " +
         "If you hold rights to this material and want it removed, please open an issue on the project's GitHub page " +
         "and it will be taken down.",
-    "App" to "Free, offline, no ads, no tracking, no internet permission.",
+    "App" to "Version ${BuildConfig.VERSION_NAME}. Free, offline, no ads, no tracking, no internet permission.",
 )
 
 @Composable

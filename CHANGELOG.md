@@ -13,3 +13,4 @@ First public release.
 - Aligned pages, pinch and double-tap zoom, optional fill-screen mode that keeps clear of punch-holes and notches.
 - App theme (Light / Dark / System) and page style (Auto / Original / Night / Invert / Warm).
 - Extras: Dua Khatm-ul-Quran, stop signs and tajweed rules.
+- "Found a mistake?" note in the app and README, with GitHub forms to report a mistake or a bug.
