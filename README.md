@@ -13,15 +13,15 @@ No ads, no tracking, no account and no internet needed. Open the app, tap **Resu
 <table>
   <tr>
     <td align="center" width="25%"><img src="docs/screenshots/home.png" width="200" alt="Quran 16 Line home screen with Surah list, verse counts and Resume button"><br><sub><b>Home and Resume</b></sub></td>
-    <td align="center" width="25%"><img src="docs/screenshots/reader.png" width="200" alt="16-line IndoPak tajweed Quran page, Surah Ya-Sin, page 397"><br><sub><b>Printed 16-line page</b></sub></td>
-    <td align="center" width="25%"><img src="docs/screenshots/reader-menu.png" width="200" alt="Reading menu with bookmark, index and page style options"><br><sub><b>One quiet ⋮ menu</b></sub></td>
-    <td align="center" width="25%"><img src="docs/screenshots/bookmark.png" width="200" alt="Bookmark a Quran page with a default name"><br><sub><b>Bookmarks</b></sub></td>
+    <td align="center" width="25%"><img src="docs/screenshots/reader-fill.png" width="200" alt="16-line IndoPak tajweed Quran page, Surah Ya-Sin, page 397"><br><sub><b>Printed 16-line page</b></sub></td>
+    <td align="center" width="25%"><img src="docs/screenshots/reader-menu-fill.png" width="200" alt="Reading menu with bookmark, index and page style options"><br><sub><b>One quiet ⋮ menu</b></sub></td>
+    <td align="center" width="25%"><img src="docs/screenshots/bookmark-fill.png" width="200" alt="Bookmark a Quran page with a default name"><br><sub><b>Bookmarks</b></sub></td>
   </tr>
   <tr>
     <td align="center" width="25%"><img src="docs/screenshots/search.png" width="200" alt="Surah search finds Al-Muddaththir from the misspelling mudasir"><br><sub><b>Search, typos welcome</b></sub></td>
     <td align="center" width="25%"><img src="docs/screenshots/para-list.png" width="200" alt="Para (Juz) list with page counts and Arabic names"><br><sub><b>Para, Surah, Manzil</b></sub></td>
     <td align="center" width="25%"><img src="docs/screenshots/settings.png" width="200" alt="Quran app settings: dark mode and page styles"><br><sub><b>Settings</b></sub></td>
-    <td align="center" width="25%"><img src="docs/screenshots/reader-night.png" width="200" alt="Tajweed Quran page in Night style for reading in the dark"><br><sub><b>Night reading</b></sub></td>
+    <td align="center" width="25%"><img src="docs/screenshots/reader-night-fill.png" width="200" alt="Tajweed Quran page in Night style for reading in the dark"><br><sub><b>Night reading</b></sub></td>
   </tr>
 </table>
 
