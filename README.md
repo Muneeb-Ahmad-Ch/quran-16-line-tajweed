@@ -13,19 +13,21 @@ Open the app, tap **Resume** (or turn on auto-resume), and keep reading from whe
 ## Features
 
 - **Resume:** remembers the last page you read. The Resume button sits at the bottom for one-handed use, or you can turn on **Open last page on start**.
-- **Surah, Para (Juz) and Manzil** lists that jump straight to the right page. Swipe between the lists.
+- **Surah, Para (Juz) and Manzil** lists that jump straight to the right page, with verse and page counts. Swipe between the lists.
 - **Surah search** that forgives spelling: type a number, the English or Arabic name, a common spelling (Yaseen, Rehman, Kahaf, Mudassir…) or another name (Insan, Fussilat, Ghafir…). It always shows the closest matches.
 - **Bookmarks** with a default name (`Para – Surah – Pg`) or your own. Rename or delete them from Home.
-- **Clean reading screen:** only the page and a faint ⋮ menu in the corner (bookmark, index, quick Dark mode and Fill screen switches, settings). Swipe right for the next page, like a printed Mushaf. Pinch or double-tap to zoom.
+- **Clean reading screen:** only the page and a faint ⋮ menu in the corner (bookmark, index, page style, Fill screen, settings). Swipe right for the next page, like a printed Mushaf. Pinch or double-tap to zoom.
 - **Aligned pages:** every page is trimmed to its frame and sized identically, so nothing jumps while you swipe.
 - **Fill screen** option to stretch pages over the whole screen. Pages always stay clear of a punch-hole or notch.
-- **Light / Dark / System theme.** You choose whether dark mode also applies to the pages, and in which style: Original, Night, Invert or Warm.
+- **Light / Dark / System theme** for the app, plus a separate **page style**: Auto (follows the app theme), Original, Night, Invert or Warm.
 - **Extras:** Dua Khatm-ul-Quran, stop signs (Rumooz-e-Auqaf), and tajweed rules in Urdu, English, Persian, Pashto and Sindhi.
 - Fully offline. No ads, no tracking, no internet permission. Android 7.0+. About 105 MB.
 
 ## Install
 
-Download `app-release.apk` from the [Releases](../../releases) page and open it on your phone. Allow "install unknown apps" when asked.
+Download the latest `Quran16Line-vX.Y.apk` from the [Releases](../../releases) page and open it on your phone. Allow "install unknown apps" when asked. Android may warn that the app is from an unknown developer; that's because it isn't on the Play Store.
+
+Updates install over the old version and keep your bookmarks and last page.
 
 ## Build it yourself
 
