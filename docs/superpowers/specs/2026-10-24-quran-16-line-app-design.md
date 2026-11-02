@@ -134,3 +134,27 @@ Checked across all 60 files:
 
 ## Left to the builder
 Project structure, persistence (e.g. DataStore / Room), image library and pager implementation, exact image resolution, compression and quality, crop detection method, palette, fonts and icons, and test approach.
+
+## Changes in v1.1 (user feedback after first install, 2026-10-24)
+- **Stretch page to fill screen** (Settings → Reading, default off): when on, pages fill the whole screen (FillBounds, 3 dp gap all round) instead of keeping printed proportions. Also a quick switch in the reader menu.
+- **Open last page on start** (Settings → Reading, default off): the app starts on the last page read, with Home underneath so Back lands on Home.
+- **Reader control is now a faint ⋮ menu** (replaces the bookmark button): Bookmark this page / Edit bookmark, Surah / Para index, quick switches for Dark mode, Tajweed colours and Fill screen, and Settings. The button sits in the top-left corner on a soft backdrop matching the page (soft green when the page is bookmarked).
+- **Home:** the tabs are swipeable, and the Continue reading card with a large Resume button moved to the bottom for one-handed use.
+
+## Changes in v1.2
+- Pages (reader and Extras) stay clear of the display cutout (punch-hole / notch) in every mode; stretched pages also keep a 6 dp gap top and bottom.
+- Home tab labels shrink to fit when the phone uses a large font size, instead of being cut off ("Bookma…").
+
+## Changes in v1.3
+- **Plain edition removed completely** at the user's request: the converter, assets, Settings, reader menu and credits now cover the tajweed-coloured edition only. App size is about 105 MB. Pages live at `assets/pages/NNNN.webp`; the manifest is `{"page": {...}, "extras": {...}}`.
+- **Surah search** at the top of the Surah tab: number, English or Arabic name, aliases and common spellings, typo-tolerant ranking. It always returns the closest matches.
+- Home, Settings and About keep clear of the larger of the status bar and the display cutout. Leaving the reader also re-shows the system bars explicitly, because some OEMs keep them hidden.
+
+## Changes in v1.4
+- Surah rows show verse count (Hafs/Kufi, 6,236 total), page count and start page. Para and Manzil rows show page count and page range.
+- Surah end pages: a Surah ends on the page before the next Surah when that Surah's banner is the first line of its page (23 Surahs, checked on every start page). Otherwise it ends on the shared page.
+
+## Changes in v1.5
+- Page style is independent of the app theme: Auto (printed page in light theme, Night in dark), Original, Night, Invert, Warm. The "dark mode on pages too" switch is gone; installs that had it migrate to Auto.
+- Reader ⋮ menu: the app Dark mode switch is replaced by a Page style picker (radio list). Fill screen stays.
+- Page audit (all 548 pages): printed page numbers match 2–549 in order; no duplicates, blank areas, blur or skew; layout and Surah banners checked on thumbnails. No misprints found.
