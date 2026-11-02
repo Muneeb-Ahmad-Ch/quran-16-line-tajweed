@@ -2,7 +2,7 @@
 
 Read the **16-line IndoPak Quran** (*Hafizi Quran*, *Quran Majeed 16 lines*) with **colour-coded tajweed** on your Android phone. All 548 pages exactly as printed, the layout used for hifz in Pakistan, India and Bangladesh.
 
-**Free · No ads · No tracking · Works offline**
+**Free · Open source · No ads · No tracking · Works offline**
 
 قرآن مجید ١٦ سطری، تجوید کے رنگوں کے ساتھ، مفت، بغیر اشتہارات اور بغیر انٹرنیٹ کے۔
 
@@ -43,7 +43,7 @@ Needs Android 7.0 or newer (about 105 MB). Updates install over the old version 
 
 ## FAQ
 
-**Is it free?** Yes. No ads, no in-app purchases, no tracking.
+**Is it free?** Yes, and open source. No ads, no in-app purchases, no tracking.
 
 **Does it work offline?** Yes. All pages are inside the app, and it doesn't even ask for internet permission.
 
@@ -64,6 +64,10 @@ If there is any mistake in this app, it is completely unintentional. No Muslim c
 "Quran 16 Line" by Qamar Apps (the PDF states CC BY-SA 4.0). The printed edition is credited to Pak Company (registered), March 2011, proofread by the Punjab Auqaf department. Downloaded from myonlinestudent.wordpress.com. Pages were only trimmed, aligned and resized for phone screens; the text is unchanged.
 
 The original publisher of these scans couldn't be fully confirmed. If you hold rights to this material and want it removed, please [open an issue](../../issues) and it will be taken down.
+
+## License
+
+The app's code is released under the [MIT License](LICENSE). The Quran page images are not part of this license; see Credits and sources above.
 
 <details>
 <summary><b>Build it yourself</b></summary>
