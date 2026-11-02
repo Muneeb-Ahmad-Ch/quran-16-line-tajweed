@@ -1,3 +1,5 @@
+<p align="center"><img src="docs/logo.svg" width="110" alt="Quran 16 Line app logo"></p>
+
 # Quran 16 Line: Free Offline Tajweed Quran App for Android (No Ads)
 
 Read the **16-line IndoPak Quran** (*Hafizi Quran*, *Quran Majeed 16 lines*) with **colour-coded tajweed** on your Android phone. All 548 pages exactly as printed, the layout used for hifz in Pakistan, India and Bangladesh.
