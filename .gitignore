@@ -13,3 +13,4 @@ tools/out/
 *.iml
 .kotlin/
 keystore.properties
+release/

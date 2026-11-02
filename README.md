@@ -1,13 +1,17 @@
-# Quran 16 Line
+# Quran 16 Line — Free Offline Tajweed Quran App for Android (No Ads)
 
-A simple, fast, offline Android app for reading the 16-line IndoPak Mushaf with colour-coded tajweed (548 pages), the print most people in Pakistan and India learn from.
+**Quran 16 Line** is a free, ad-free, offline Android app for reading the **16-line IndoPak Quran** (also called the *Hafizi Quran* or *Quran Majeed 16 lines*) with **colour-coded tajweed**. It shows all 548 pages exactly as printed, the layout most people in Pakistan, India and Bangladesh learn and memorise from.
 
-Open the app, tap **Resume** (or turn on auto-resume), and keep reading from where you stopped.
+No ads, no tracking, no account and no internet needed. Open the app, tap **Resume**, and keep reading from where you stopped.
+
+قرآن مجید ١٦ سطری — تجوید کے رنگوں کے ساتھ، مفت، بغیر اشتہارات اور بغیر انٹرنیٹ کے۔
+
+**[⬇ Download the latest APK](../../releases/latest)**
 
 <p>
-  <img src="docs/screenshots/home-light.jpg" width="200" alt="Home screen">
-  <img src="docs/screenshots/reader-night.jpg" width="200" alt="Reading in Night style">
-  <img src="docs/screenshots/settings-dark.jpg" width="200" alt="Settings">
+  <img src="docs/screenshots/home-light.jpg" width="200" alt="Quran 16 Line app home screen with Surah list and Resume button">
+  <img src="docs/screenshots/reader-night.jpg" width="200" alt="16-line tajweed Quran page in night mode">
+  <img src="docs/screenshots/settings-dark.jpg" width="200" alt="Quran app settings: dark mode and page styles">
 </p>
 
 ## Features
@@ -22,6 +26,26 @@ Open the app, tap **Resume** (or turn on auto-resume), and keep reading from whe
 - **Light / Dark / System theme** for the app, plus a separate **page style**: Auto (follows the app theme), Original, Night, Invert or Warm.
 - **Extras:** Dua Khatm-ul-Quran, stop signs (Rumooz-e-Auqaf), and tajweed rules in Urdu, English, Persian, Pashto and Sindhi.
 - Fully offline. No ads, no tracking, no internet permission. Android 7.0+. About 105 MB.
+
+## FAQ
+
+**Is this Quran app free?**
+Yes. It's completely free, with no ads, no in-app purchases and no tracking.
+
+**Does it work offline?**
+Yes. All 548 pages are inside the app, so it works without internet. The app doesn't even ask for internet permission.
+
+**Which Quran is it? Is it the 16-line Hafizi Quran?**
+It's the 16-line IndoPak Mushaf (548 pages, Para 1 to 30) with colour-coded tajweed rules: Tafkheem, Ghunna, Qalqala and Ikhfa. This is the same 16-line layout used for hifz in Pakistan and India, so page numbers match the printed copies.
+
+**Can I read by Surah, Para (Juz) or Manzil?**
+Yes. There are lists for all 114 Surahs, 30 Paras and 7 Manzils, plus a Surah search that understands common spellings like Yaseen, Rehman, Kahaf and Mulk.
+
+**Is it on the Google Play Store?**
+Not yet. Download the APK from the [Releases](../../releases) page and install it directly.
+
+**Which phones does it support?**
+Android 7.0 or newer. It also works on phones with a notch or punch-hole camera, and on large font sizes.
 
 ## Install
 
