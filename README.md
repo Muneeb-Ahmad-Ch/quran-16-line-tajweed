@@ -1,18 +1,29 @@
-# Quran 16 Line — Free Offline Tajweed Quran App for Android (No Ads)
+# Quran 16 Line: Free Offline Tajweed Quran App for Android (No Ads)
 
 **Quran 16 Line** is a free, ad-free, offline Android app for reading the **16-line IndoPak Quran** (also called the *Hafizi Quran* or *Quran Majeed 16 lines*) with **colour-coded tajweed**. It shows all 548 pages exactly as printed, the layout most people in Pakistan, India and Bangladesh learn and memorise from.
 
 No ads, no tracking, no account and no internet needed. Open the app, tap **Resume**, and keep reading from where you stopped.
 
-قرآن مجید ١٦ سطری — تجوید کے رنگوں کے ساتھ، مفت، بغیر اشتہارات اور بغیر انٹرنیٹ کے۔
+قرآن مجید ١٦ سطری، تجوید کے رنگوں کے ساتھ، مفت، بغیر اشتہارات اور بغیر انٹرنیٹ کے۔
 
 **[⬇ Download the latest APK](../../releases/latest)**
 
-<p>
-  <img src="docs/screenshots/home-light.jpg" width="200" alt="Quran 16 Line app home screen with Surah list and Resume button">
-  <img src="docs/screenshots/reader-night.jpg" width="200" alt="16-line tajweed Quran page in night mode">
-  <img src="docs/screenshots/settings-dark.jpg" width="200" alt="Quran app settings: dark mode and page styles">
-</p>
+## Screenshots
+
+<table>
+  <tr>
+    <td align="center" width="25%"><img src="docs/screenshots/home.png" width="200" alt="Quran 16 Line home screen with Surah list, verse counts and Resume button"><br><sub><b>Home and Resume</b></sub></td>
+    <td align="center" width="25%"><img src="docs/screenshots/reader.png" width="200" alt="16-line IndoPak tajweed Quran page, Surah Ya-Sin, page 397"><br><sub><b>Printed 16-line page</b></sub></td>
+    <td align="center" width="25%"><img src="docs/screenshots/reader-menu.png" width="200" alt="Reading menu with bookmark, index and page style options"><br><sub><b>One quiet ⋮ menu</b></sub></td>
+    <td align="center" width="25%"><img src="docs/screenshots/bookmark.png" width="200" alt="Bookmark a Quran page with a default name"><br><sub><b>Bookmarks</b></sub></td>
+  </tr>
+  <tr>
+    <td align="center" width="25%"><img src="docs/screenshots/search.png" width="200" alt="Surah search finds Al-Muddaththir from the misspelling mudasir"><br><sub><b>Search, typos welcome</b></sub></td>
+    <td align="center" width="25%"><img src="docs/screenshots/para-list.png" width="200" alt="Para (Juz) list with page counts and Arabic names"><br><sub><b>Para, Surah, Manzil</b></sub></td>
+    <td align="center" width="25%"><img src="docs/screenshots/settings.png" width="200" alt="Quran app settings: dark mode and page styles"><br><sub><b>Settings</b></sub></td>
+    <td align="center" width="25%"><img src="docs/screenshots/reader-night.png" width="200" alt="Tajweed Quran page in Night style for reading in the dark"><br><sub><b>Night reading</b></sub></td>
+  </tr>
+</table>
 
 ## Features
 
