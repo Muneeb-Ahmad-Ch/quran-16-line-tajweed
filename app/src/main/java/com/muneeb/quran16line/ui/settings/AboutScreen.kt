@@ -18,8 +18,9 @@ import com.muneeb.quran16line.ui.safeTopPadding
 private val credits = listOf(
     "Found a mistake?" to "This app was made with great care, but humans make mistakes. If you notice a missing or " +
         "misplaced page, a wrong Surah, Para or page number, or any bug, please report it on the project's " +
-        "GitHub page (Issues → Report a mistake) so it can be corrected. Any mistake is unintentional. " +
-        "May Allah forgive our shortcomings.",
+        "GitHub page (Issues → Report a mistake) so it can be corrected. If there is any mistake, it is " +
+        "completely unintentional: no Muslim could ever think of making a mistake in the Quran on purpose. " +
+        "May Allah forgive our shortcomings and accept this humble effort. Ameen.",
     "Mushaf" to "16-line IndoPak Mushaf with colour-coded tajweed, 548 pages (pages 2–549).",
     "Source" to "“Quran 16 Line” by Qamar Apps (stated in the PDF as CC BY-SA 4.0). " +
         "Printed edition credited to Pak Company (registered), March 2011, proofread by the Punjab Auqaf department. " +

@@ -80,9 +80,9 @@ This app was made with great care, but it was made by a human, and humans make m
 - a wrong Surah, Para, Manzil, verse count or page number
 - a bug, crash or anything that doesn't work as expected
 
-Any mistake in this app is unintentional. May Allah forgive our shortcomings and accept this small effort.
+If there is any mistake in this app, it is completely unintentional. No Muslim could ever think of making a mistake in the Quran on purpose. Please point it out and it will be corrected as soon as possible. May Allah forgive our shortcomings and accept this humble effort. Ameen.
 
-اگر آپ کو اس ایپ میں کوئی غلطی نظر آئے تو براہِ کرم ضرور بتائیں تاکہ اسے درست کیا جا سکے۔ کوئی بھی غلطی جان بوجھ کر نہیں کی گئی۔
+اگر اس ایپ میں کوئی غلطی ہے تو وہ ہرگز جان بوجھ کر نہیں کی گئی۔ کوئی مسلمان قرآنِ پاک میں جان بوجھ کر غلطی کرنے کا سوچ بھی نہیں سکتا۔ اگر آپ کو کوئی غلطی نظر آئے تو براہِ کرم ضرور بتائیں تاکہ اسے فوراً درست کیا جا سکے۔ اللہ تعالیٰ ہماری کوتاہیوں کو معاف فرمائے اور اس چھوٹی سی کوشش کو قبول فرمائے۔ آمین
 
 ## Credits and sources
 

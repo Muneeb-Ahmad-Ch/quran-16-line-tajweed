@@ -6,7 +6,8 @@ body:
   - type: markdown
     attributes:
       value: |
-        JazakAllah khair for helping correct this app. Any mistake in it is unintentional.
+        JazakAllah khair for helping correct this app. If there is any mistake, it is completely unintentional:
+        no Muslim could ever think of making a mistake in the Quran on purpose.
   - type: input
     id: page
     attributes:
